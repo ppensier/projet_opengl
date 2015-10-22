@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>571</width>
+    <height>534</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QPushButton" name="quitB">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>420</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Quitter</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="zonePTE">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>461</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="plainText">
+     <string>Zone d'affichage des informations relatives au MNT(distance, visibilité,coordonnées des points sélectionnés)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="nomL">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MNT</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="nomLE">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>10</y>
+      <width>113</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choisir un fichier MNT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="razB">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>80</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RAZ</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="choiceB">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>10</y>
+      <width>241</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choisir deux points pour afficher l'intervisilité</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="computationB">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>50</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>lancer le calcul</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openFileB">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>10</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="GL_Widget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>29</x>
+      <y>130</y>
+      <width>421</width>
+      <height>321</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>571</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuIntervisibilitySoft">
+    <property name="title">
+     <string>Intervisibility Software</string>
+    </property>
+   </widget>
+   <addaction name="menuIntervisibilitySoft"/>
+  </widget>
+  <widget class="QStatusBar" name="sBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GL_Widget</class>
+   <extends>QWidget</extends>
+   <header>myglwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,7 @@
+main.cpp
+mainwindow.cpp
+mainwindow.h
+myGLWidget.cpp
+myGLWidget.h
+myWindow.cpp
+myWindow.h
