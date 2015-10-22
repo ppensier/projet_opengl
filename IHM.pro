@@ -6,7 +6,9 @@
 
 QT      += core gui
 QT      += opengl
+QT +=   xml
 
+LIBS += -lQGLViewer
 LIBS += -lglut
 LIBS += -lGLU
 INCLUDEPATH += -L/usr/lib/
@@ -21,12 +23,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
         points.cpp \
-    myglwidget.cpp \
-    triangle.cpp
+    triangle.cpp \
+    simpleViewer.cpp
 
 HEADERS  += mainwindow.h \
         points.h \
-    myglwidget.h \
-    triangle.h
+    triangle.h \
+    simpleViewer.h
 
 FORMS    += mainwindow.ui

@@ -9,8 +9,6 @@ namespace Ui {
 class MainWindow;
 }
 
-void readMNT();
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

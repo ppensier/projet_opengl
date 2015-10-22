@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "simpleViewer.h"
 
 #include <QFileDialog>
 #include <fstream>
@@ -16,7 +16,7 @@ const int taille_fichier = 100;
 
 //count the number of lines in the file;
 
-QVector3D tab[taille_fichier];
+//QVector tab[taille_fichier];
 //Points* tab2 = new Points[taille_fichier];//allocation dynamique de tableaux
 
 //Essai Qttor
@@ -29,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
+
+    QWidget *m_viewer = new Viewer(m_vector, this); // don't forget to delete the m_viewer
+    ui->verticalLayout_3->addWidget(m_viewer);
 
     // On ferme l'application
     QObject::connect(ui->quitB,SIGNAL(released()),this,SLOT(close()));
@@ -62,6 +65,7 @@ void MainWindow::raz() {
 void MainWindow::changeNom(){
    nomF = QFileDialog::getOpenFileName(this);
    ui->nomLE->setText(nomF);
+   read();
 }
 
 void MainWindow::read(){
@@ -84,19 +88,20 @@ void MainWindow::read(){
                 f>>abscisse>>ordonnee>>altitude;
 
                 QVector3D point(abscisse, ordonnee, altitude);
-
+/*
                 tab[i].setX(abscisse);
                 tab[i].setY(ordonnee);
                 tab[i].setZ(altitude);
-
+*/
                 vectorT.push_back(point);
 
-                ui->widget->setterNomFile(nomF.toStdString().c_str());                
+                //ui->widget->setterNomFile(nomF.toStdString().c_str());
 
                 ui->zonePTE->appendPlainText(nomF.toStdString().c_str());
-                ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
+                //ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
+//                ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
             }
-            ui->widget->setterTableau(vectorT);
+            //ui->widget->setterTableau(vectorT);
             //delete[] vectorT;
        }
 }

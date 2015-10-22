@@ -11,7 +11,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-
+/*
     Points p1(1.0, 0.0, 0.0);
     Points p2(3.0, 0.0, 0.0);
     Points p3(1.0, 0.0, 0.0);
@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     cout << "Le perimetre du triangle est le suivant: " << peri << endl;
     double abs = p1.getterAbscisse();
     cout << abs << endl;
+*/
 
     QApplication a(argc, argv);
     MainWindow w;
@@ -32,3 +33,7 @@ int main(int argc, char *argv[])
     return a.exec();
 
 }
+
+
+
+
