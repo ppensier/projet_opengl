@@ -1,6 +1,6 @@
 #include "points.h"
 #include <cmath>
-
+//test commit
 #include <iostream>
 
 //constructeur par defaut de la classe points
