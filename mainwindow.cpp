@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "simpleViewer.h"
 
+#include <QVector3D>
+#include <QVector>
 #include <QFileDialog>
 #include <fstream>
 #include <iostream>
@@ -30,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
 
-    QWidget *m_viewer = new Viewer(m_vector, this); // don't forget to delete the m_viewer
+    QWidget *m_viewer = new Viewer(m_vect, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
     // On ferme l'application

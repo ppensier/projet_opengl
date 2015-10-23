@@ -28,6 +28,7 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
+    QVector<QVector3D> m_vect;
 };
 
 #endif // MAINWINDOW_H

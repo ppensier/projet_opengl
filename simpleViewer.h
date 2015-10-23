@@ -4,9 +4,9 @@
 class Viewer : public QGLViewer
 {
 public:
-    explicit Viewer(QWidget *parent = 0);
-    QVector<QVector3D> setterTableau(QVector<QVector3D> *vector);
-    QVector<QVector3D> getterTableau();
+    explicit Viewer(const QVector<QVector3D>& vector, QWidget *parent = 0);
+    //void setterTableau(const QVector<QVector3D> &vector);
+    //QVector<QVector3D> getTableau();
 
     //test ajout attribut
     double maxAbs;

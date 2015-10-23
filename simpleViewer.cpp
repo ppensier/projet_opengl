@@ -3,25 +3,24 @@
 
 using namespace std;
 
-Viewer::Viewer(const QVector<QVector3D>& vector, Widget *parent) :
+Viewer::Viewer(const QVector<QVector3D>& vector, QWidget *parent) :
 QGLViewer(parent), m_vector(vector)
 {
     //std::string m_nameFile;
 }
 
 //Accesseurs et mutateurs de tableau dans la classe viewer
-QVector<QVector3D> Viewer::getterTableau()
+/*QVector<QVector3D> Viewer::getTableau()
 {
     return this->m_vector;
 }
 
-QVector<QVector3D> Viewer::setterTableau(QVector<QVector3D> vector)
+void Viewer::setterTableau(const QVector<QVector3D>& vector)
 {
 
     m_vector = vector;
 
-    return m_vector;
-}
+}*/
 
 void Viewer::initializeGL()
 {
@@ -36,7 +35,6 @@ void Viewer::initializeGL()
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glPointSize( 10.0 );
-
 
 /*
     double maxAbs = this->m_vector[0].x();
@@ -64,7 +62,6 @@ void Viewer::initializeGL()
 
 }
 
-
 void Viewer::resizeGL(int width, int height)
 {
     glViewport(0, 0, (GLint)width, (GLint)height);
@@ -79,4 +76,3 @@ void Viewer::paintGL()
     glDisableClientState(GL_VERTEX_ARRAY);
 
 }
-
