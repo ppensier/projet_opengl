@@ -6,7 +6,7 @@ class Viewer : public QGLViewer
 public:
     explicit Viewer(const QVector<QVector3D>& vector, QWidget *parent = 0);
     //void setterTableau(const QVector<QVector3D> &vector);
-    //QVector<QVector3D> getTableau();
+    QVector<QVector3D> getTableau();
 
     //test ajout attribut
     double maxAbs;
@@ -14,9 +14,8 @@ public:
     double maxAlt;
 
 protected:
-    void initializeGL();
-    void resizeGL(int width, int height);
-    void paintGL();
+    virtual void draw();
+    virtual void init();
     //virtual QString helpString() const;
 
 private:

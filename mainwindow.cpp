@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    //Initialisation du paramètre m_vect
+    //m_vect(0);
+
     ui->setupUi(this);
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
@@ -77,7 +80,7 @@ void MainWindow::read(){
        else
        {
 
-            //while(getline(f,texte)){
+        //while(getline(f,texte)){
             //    ui->zonePTE->appendPlainText(QString(texte.c_str()));
 
             for(int i(0); i<taille_fichier; i++)
@@ -104,7 +107,6 @@ void MainWindow::read(){
 //                ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
             }
             //ui->widget->setterTableau(vectorT);
-            //delete[] vectorT;
        }
 }
 

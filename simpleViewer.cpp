@@ -10,11 +10,12 @@ QGLViewer(parent), m_vector(vector)
 }
 
 //Accesseurs et mutateurs de tableau dans la classe viewer
-/*QVector<QVector3D> Viewer::getTableau()
+QVector<QVector3D> Viewer::getTableau()
 {
     return this->m_vector;
 }
 
+/*
 void Viewer::setterTableau(const QVector<QVector3D>& vector)
 {
 
@@ -22,27 +23,12 @@ void Viewer::setterTableau(const QVector<QVector3D>& vector)
 
 }*/
 
-void Viewer::initializeGL()
+void Viewer::init()
 {
-    restoreStateFromFile();
-    glLineWidth(3.0);
-    glPointSize(10.0);
+    double maxAbs(0);
+    double maxOrd(0);
+    double maxAlt(0);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glEnable( GL_POINT_SMOOTH );
-    glEnable( GL_BLEND );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glPointSize( 10.0 );
-
-/*
-    double maxAbs = this->m_vector[0].x();
-    double maxOrd = this->m_vector[0].y();
-    double maxAlt = this->m_vector[0].z();
-
-/*
-    glClear(GL_COLOR_BUFFER_BIT);
     for ( int i = 0; i < m_vector.size(); i++ )
     {
         if (m_vector[i].x() > maxAbs)
@@ -58,21 +44,64 @@ void Viewer::initializeGL()
             maxAlt = m_vector[i].z();
         }
     }
+
+    glPointSize( 10.0 );
+    restoreStateFromFile();
+/*Previous initializeGL
+    restoreStateFromFile();
+    glLineWidth(3.0);
+    glPointSize(10.0);
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glEnable( GL_POINT_SMOOTH );
+    glEnable( GL_BLEND );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glPointSize( 10.0 );
 */
+
+    //int sizeTable = m_vector.size();
+
+//    QVector<QVector3D> testVector;
+//
+//    testVector = this->getTableau();
+
+//    double maxAbs = testVector[0].x();
+//    double maxOrd = this->m_vector[0].y();
+//    double maxAlt = this->m_vector[0].z();
 
 }
 
+/*
 void Viewer::resizeGL(int width, int height)
 {
     glViewport(0, 0, (GLint)width, (GLint)height);
 }
+*/
 
-void Viewer::paintGL()
+void Viewer::draw()
 {
-    qglColor(Qt::white);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, m_vector.constData());
-    glDrawArrays(GL_TRIANGLES, 0, m_vector.size());
-    glDisableClientState(GL_VERTEX_ARRAY);
+
+/*
+  glBegin(GL_LINE_LOOP);
+      glColor3f(1.0f, 0.2f , 0.0f);
+      glVertex3f(1.0, 1.0, 0.0);
+      glVertex3f(0.0, 0.0, 0.0);
+      glVertex3f(1.0, 0.0, 0.0);
+  glEnd();
+*/
+
+  glBegin(GL_LINE);
+  for (int i(0); i<m_vector.size(); i++)
+  {
+      glColor3f(0.0f, 0.0f, 0.0f);
+      glVertex3f(m_vector[i].x(), m_vector[i].y(), m_vector[i].z());
+
+  }
+  glEnd();
 
 }
+
+
+
