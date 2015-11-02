@@ -2,8 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QVector>
+#include <QTextStream>
 #include <QVector3D>
+#include <QVector>
+#include <QFileDialog>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <QIcon>
+#include <limits>
+#include <typeinfo>
+#include <QtWidgets>
+
+#include "simpleViewer.h"
 
 namespace Ui {
 class MainWindow;
@@ -15,20 +26,23 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    QString nomF;
     ~MainWindow();
+    void read();
+    QVector<QVector3D>& vect(int taille);
 
 public slots:
     void raz();
     void changeNom();
-    void read();
-    //void write();
     void changed();
-    //void readMNT(); Fonction à rajouter pour lire le fichier texte du MNT!
 
 private:
     Ui::MainWindow *ui;
+
+protected:
     QVector<QVector3D> m_vect;
+    QString nomF;
+    Viewer* m_viewer;
+
 };
 
 #endif // MAINWINDOW_H

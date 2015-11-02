@@ -1,24 +1,28 @@
+#ifndef SIMPLEVIEWER_H
+#define SIMPLEVIEWER_H
+
+#include <QVector>
+#include <QVector3D>
 #include <QGLViewer/qglviewer.h>
-#include "mainwindow.h"
 
 class Viewer : public QGLViewer
 {
 public:
     explicit Viewer(const QVector<QVector3D>& vector, QWidget *parent = 0);
     //void setterTableau(const QVector<QVector3D> &vector);
-    QVector<QVector3D> getTableau();
-
-    //test ajout attribut
-    double maxAbs;
-    double maxOrd;
-    double maxAlt;
+    //QVector<QVector3D> getTableau();
+    //QVector<QVector3D>& operator=(const QVector<QVector3D>& vec);
+    virtual void init();
 
 protected:
     virtual void draw();
-    virtual void init();
-    //virtual QString helpString() const;
 
-private:
+    qglviewer::Vec minCoord;
+    qglviewer::Vec maxCoord;
     const QVector<QVector3D>& m_vector;
 
+private:
+
 };
+
+#endif // SIMPLEVIEWER_H

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "simpleViewer.h"
 
+#include <QTextStream>
 #include <QVector3D>
 #include <QVector>
 #include <QFileDialog>
@@ -16,26 +16,22 @@ using namespace std;
 
 const int taille_fichier = 100;
 
-//count the number of lines in the file;
-
-//QVector tab[taille_fichier];
 //Points* tab2 = new Points[taille_fichier];//allocation dynamique de tableaux
 
-//Essai Qttor
-QVector<QVector3D> vectorT(taille_fichier);
+//QVector<QVector3D> vectorT(taille_fichier);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{
-    //Initialisation du paramètre m_vect
-    //m_vect(0);
-
+{  
     ui->setupUi(this);
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
 
-    QWidget *m_viewer = new Viewer(m_vect, this);
+
+    //Initialisation du paramètre m_vect
+    //m_vect();
+    m_viewer = new Viewer(m_vect, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
     //bouton quitter
@@ -67,10 +63,20 @@ MainWindow::MainWindow(QWidget *parent) :
     // On détecte si le texte a changé
     QObject::connect(ui->zonePTE,SIGNAL(textChanged()),this,SLOT(changed()));
 
+    /*
     QIcon image("../Preview.jpg");
     ui->openFileB->setIcon(image);
     ui->openFileB->show();
+    */
 }
+
+/*
+QVector<QVector3D>& MainWindow::vect(int taille) {
+
+    return m_vect;
+
+}
+*/
 
 void MainWindow::raz() {
     ui->nomLE->clear();
@@ -85,40 +91,39 @@ void MainWindow::changeNom(){
 }
 
 void MainWindow::read(){
-    ifstream f (nomF.toStdString().c_str());
-    if ( !f )
-           ui->zonePTE->QPlainTextEdit::appendPlainText("fichier inexistant");
-       else
-       {
+    QFile file(nomF.toStdString().c_str());
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&file);
 
-        //while(getline(f,texte)){
-            //    ui->zonePTE->appendPlainText(QString(texte.c_str()));
+        while (!file.atEnd())
+        //for (int i(0); i<10; i++)
+        {
 
-            for(int i(0); i<taille_fichier; i++)
-            //while(getline(f,texte))
-            {
-                double abscisse;
-                double ordonnee;
-                double altitude;
+            QString line = in.readLine();
+            QStringList coordonnees = line.split(' ');
 
-                f>>abscisse>>ordonnee>>altitude;
+            double abscisse = coordonnees[0].toDouble();
+            double ordonnee = coordonnees[1].toDouble();
+            double altitude = coordonnees[2].toDouble();
 
-                QVector3D point(abscisse, ordonnee, altitude);
-/*
-                tab[i].setX(abscisse);
-                tab[i].setY(ordonnee);
-                tab[i].setZ(altitude);
-*/
-                vectorT.push_back(point);
+            //f>>abscisse>>ordonnee>>altitude;
 
-                //ui->widget->setterNomFile(nomF.toStdString().c_str());
+            QVector3D point(abscisse, ordonnee, altitude);
 
-                ui->zonePTE->appendPlainText(nomF.toStdString().c_str());
-                //ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
-//                ui->zonePTE->appendPlainText( QString::number(tab[i].x()));
-            }
-            //ui->widget->setterTableau(vectorT);
-       }
+            m_vect.push_back(point);
+            //vectorT.push_back(point);
+            //ui->widget->setterNomFile(nomF.toStdString().c_str());
+
+        }
+
+        file.close();
+        m_viewer->init();
+    }
+    else
+    {
+        ui->zonePTE->appendPlainText("impossible de lire le fichier");
+    }
 }
 
 void MainWindow::changed(){
@@ -147,8 +152,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void readMNT()
-{
-    std::cout << "toto" << endl;
-}
 
+//ifstream f (nomF.toStdString().c_str());
+//if ( !f )
+//       ui->zonePTE->QPlainTextEdit::appendPlainText("le fichier choisi n'existe pas");
+//   else
+//   {
