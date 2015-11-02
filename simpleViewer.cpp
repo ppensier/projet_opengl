@@ -83,15 +83,14 @@ void Viewer::resizeGL(int width, int height)
 void Viewer::draw()
 {
 
-/*
   glBegin(GL_LINE_LOOP);
       glColor3f(1.0f, 0.2f , 0.0f);
       glVertex3f(1.0, 1.0, 0.0);
       glVertex3f(0.0, 0.0, 0.0);
       glVertex3f(1.0, 0.0, 0.0);
   glEnd();
-*/
 
+    /*
   glBegin(GL_LINE);
   for (int i(0); i<m_vector.size(); i++)
   {
@@ -100,7 +99,7 @@ void Viewer::draw()
 
   }
   glEnd();
-
+*/
 }
 
 

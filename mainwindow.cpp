@@ -38,6 +38,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *m_viewer = new Viewer(m_vect, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
+    //bouton quitter
+    QObject::connect(ui->actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
+    ui->actionQuitter->setShortcut(QKeySequence("Ctrl+Q"));
+
+    //ouvrir un fichier
+    QObject::connect(ui->actionMNT, SIGNAL(triggered()), this, SLOT(changeNom()));
+
+    //méthode raz de la zone de texte
+    QObject::connect(ui->actionRAZ, SIGNAL(triggered()), this, SLOT(raz()));
+
+    //Anciens boutons
     // On ferme l'application
     QObject::connect(ui->quitB,SIGNAL(released()),this,SLOT(close()));
 

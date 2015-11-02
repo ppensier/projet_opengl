@@ -154,12 +154,54 @@
    </property>
    <widget class="QMenu" name="menuIntervisibilitySoft">
     <property name="title">
-     <string>Intervisibility Software</string>
+     <string>Fichier</string>
     </property>
+    <addaction name="actionMNT"/>
+    <addaction name="actionQuitter"/>
+   </widget>
+   <widget class="QMenu" name="menuEdition">
+    <property name="title">
+     <string>Edition</string>
+    </property>
+    <addaction name="actionRAZ"/>
+   </widget>
+   <widget class="QMenu" name="menuAffichage">
+    <property name="title">
+     <string>Affichage</string>
+    </property>
+    <addaction name="actionChoisir_le_s_point_s"/>
+    <addaction name="actionLancer_le_calcul"/>
    </widget>
    <addaction name="menuIntervisibilitySoft"/>
+   <addaction name="menuEdition"/>
+   <addaction name="menuAffichage"/>
   </widget>
   <widget class="QStatusBar" name="sBar"/>
+  <action name="actionMNT">
+   <property name="text">
+    <string>Choisir un MNT</string>
+   </property>
+  </action>
+  <action name="actionQuitter">
+   <property name="text">
+    <string>Quitter</string>
+   </property>
+  </action>
+  <action name="actionRAZ">
+   <property name="text">
+    <string>RAZ</string>
+   </property>
+  </action>
+  <action name="actionChoisir_le_s_point_s">
+   <property name="text">
+    <string>Choisir le(s) point(s)</string>
+   </property>
+  </action>
+  <action name="actionLancer_le_calcul">
+   <property name="text">
+    <string>Lancer le calcul</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
