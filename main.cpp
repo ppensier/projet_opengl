@@ -9,10 +9,24 @@
 
 using namespace std;
 
+
 int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);
+    QSharedMemory sharedMemory("{69B55631-A712-4d8c-8852-A8ED297EF439}");
+
+/*
+    if(!sharedMemory.create(sizeof(int))) {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.setWindowTitle("Nom de ton application");
+        msgBox.setText("L'application est déjà lancée");
+        msgBox.exec();
+        return 1;
+    }
+*/
+
     MainWindow w;
     w.show();
     return a.exec();

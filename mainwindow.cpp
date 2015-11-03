@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {  
+
+
     ui->setupUi(this);
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
@@ -70,14 +72,6 @@ MainWindow::MainWindow(QWidget *parent) :
     */
 }
 
-/*
-QVector<QVector3D>& MainWindow::vect(int taille) {
-
-    return m_vect;
-
-}
-*/
-
 void MainWindow::raz() {
     ui->nomLE->clear();
     ui->zonePTE->clear();
@@ -97,7 +91,7 @@ void MainWindow::read(){
         QTextStream in(&file);
 
         while (!file.atEnd())
-        //for (int i(0); i<10; i++)
+        //for (int i(0); i<100; i++)
         {
 
             QString line = in.readLine();
@@ -112,13 +106,14 @@ void MainWindow::read(){
             QVector3D point(abscisse, ordonnee, altitude);
 
             m_vect.push_back(point);
-            //vectorT.push_back(point);
             //ui->widget->setterNomFile(nomF.toStdString().c_str());
 
         }
 
         file.close();
+        cout << "fin de la lecture" << endl;
         m_viewer->init();
+
     }
     else
     {
@@ -153,8 +148,3 @@ MainWindow::~MainWindow()
 }
 
 
-//ifstream f (nomF.toStdString().c_str());
-//if ( !f )
-//       ui->zonePTE->QPlainTextEdit::appendPlainText("le fichier choisi n'existe pas");
-//   else
-//   {

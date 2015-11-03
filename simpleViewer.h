@@ -20,6 +20,7 @@ protected:
     qglviewer::Vec minCoord;
     qglviewer::Vec maxCoord;
     const QVector<QVector3D>& m_vector;
+    int vertices_by_x;
 
 private:
 
