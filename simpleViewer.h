@@ -2,6 +2,7 @@
 #define SIMPLEVIEWER_H
 
 #include <QVector>
+#include <QVector2D>
 #include <QVector3D>
 #include <QGLViewer/qglviewer.h>
 
@@ -14,13 +15,17 @@ public:
     //QVector<QVector3D>& operator=(const QVector<QVector3D>& vec);
     virtual void init();
 
+    qglviewer::Vec minCoord;
+    qglviewer::Vec maxCoord;
+
 protected:
     virtual void draw();
 
-    qglviewer::Vec minCoord;
-    qglviewer::Vec maxCoord;
+//    qglviewer::Vec minCoord;
+//    qglviewer::Vec maxCoord;
     const QVector<QVector3D>& m_vector;
     int vertices_by_x;
+    QVector<QVector3D> m_vertexSort;
 
 private:
 

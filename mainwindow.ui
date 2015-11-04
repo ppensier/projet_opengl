@@ -21,33 +21,51 @@
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>10</number>
       </property>
       <item>
-       <widget class="QLabel" name="nomL">
+       <widget class="QLabel" name="point1">
         <property name="text">
-         <string>MNT</string>
+         <string>Point 1</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="nomLE">
+       <widget class="QSpinBox" name="x1"/>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="y1"/>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="z1"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="point2">
         <property name="text">
-         <string>Choisir un fichier MNT</string>
+         <string>Point 2</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="openFileB">
-        <property name="text">
-         <string>...</string>
+       <widget class="QSpinBox" name="x2">
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="value">
+         <number>0</number>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="choiceB">
+       <widget class="QSpinBox" name="y2"/>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="z2"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="envoyerCoord">
         <property name="text">
-         <string>Choisir deux points pour afficher l'intervisilité</string>
+         <string>envoyer!</string>
         </property>
        </widget>
       </item>
@@ -59,7 +77,10 @@
        <number>0</number>
       </property>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -77,20 +98,6 @@
         <property name="leftMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="QPushButton" name="computationB">
-          <property name="text">
-           <string>lancer le calcul</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="razB">
-          <property name="text">
-           <string>RAZ</string>
-          </property>
-         </widget>
-        </item>
         <item>
          <spacer name="verticalSpacer">
           <property name="orientation">

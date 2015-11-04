@@ -25,16 +25,37 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {  
 
-
     ui->setupUi(this);
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
 
+    //ui->verticalLayout_3->addStretch(100);
+    ui->zonePTE->setFixedHeight(80);
+    //ui->horizontalLayout_3->setSizeConstraint(QLayout::SetFixedSize);
 
     //Initialisation du paramètre m_vect
     //m_vect();
     m_viewer = new Viewer(m_vect, this);
     ui->verticalLayout_3->addWidget(m_viewer);
+
+    ui->point1->setToolTip("Entrer les coordonnées x,y de votre point en Lambert II étendu");
+    ui->point1->setCursor(Qt::WhatsThisCursor);
+    ui->point2->setToolTip("Entrer les coordonnées x,y de votre point en Lambert II étendu");
+    ui->point2->setCursor(Qt::WhatsThisCursor);
+
+    if (m_vect.length() != 0)//si le MNT est chargé on change les valeurs limites des spinbox
+    {
+
+        cout << "je rentre ici!" << int(m_viewer->minCoord.x) << endl;
+        ui->x1->setMinimum(int(m_viewer->minCoord.x));
+        ui->x1->setMaximum(int(m_viewer->maxCoord.x));
+        ui->x2->setMinimum(int(m_viewer->minCoord.x));
+        ui->x2->setMaximum(int(m_viewer->maxCoord.x));
+        ui->y1->setMinimum(int(m_viewer->minCoord.y));
+        ui->y1->setMaximum(int(m_viewer->maxCoord.y));
+        ui->y2->setMinimum(int(m_viewer->minCoord.y));
+        ui->y2->setMaximum(int(m_viewer->maxCoord.y));
+    }
 
     //bouton quitter
     QObject::connect(ui->actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -51,19 +72,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->quitB,SIGNAL(released()),this,SLOT(close()));
 
     // On nettoie les autres objets
-    QObject::connect(ui->razB,SIGNAL(released()),this,SLOT(raz()));
+    //QObject::connect(ui->razB,SIGNAL(released()),this,SLOT(raz()));
 
     // On navigue dans l'arborescence des fichiers
-    QObject::connect(ui->openFileB,SIGNAL(released()),this,SLOT(changeNom()));
+    //QObject::connect(ui->openFileB,SIGNAL(released()),this,SLOT(changeNom()));
 
     // On lit le fichier
-    QObject::connect(ui->choiceB,SIGNAL(released()),this,SLOT(read()));
+    //QObject::connect(ui->choiceB,SIGNAL(released()),this,SLOT(read()));
 
     // On écrit dans le fichier
-    QObject::connect(ui->computationB,SIGNAL(released()),this,SLOT(write()));
+    //QObject::connect(ui->computationB,SIGNAL(released()),this,SLOT(write()));
 
     // On détecte si le texte a changé
     QObject::connect(ui->zonePTE,SIGNAL(textChanged()),this,SLOT(changed()));
+
+    QObject::connect(ui->envoyerCoord, SIGNAL(clicked()), this, SLOT(chargerCoordonneesInterp()));
 
     /*
     QIcon image("../Preview.jpg");
@@ -73,14 +96,14 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::raz() {
-    ui->nomLE->clear();
+    //ui->nomLE->clear();
     ui->zonePTE->clear();
     ui->sBar->showMessage("...Nettoyage...",2000);
 }
 
 void MainWindow::changeNom(){
    nomF = QFileDialog::getOpenFileName(this);
-   ui->nomLE->setText(nomF);
+   //ui->nomLE->setText(nomF);
    read();
 }
 
@@ -141,6 +164,24 @@ void MainWindow::write(){
     }
   }
 */
+
+void MainWindow::chargerCoordonneesInterp()
+{
+    if (m_vect.length() != 0)
+    {
+        coordAinterp1.setX(ui->x1->value());
+        coordAinterp1.setY(ui->y1->value());
+
+        cout << "abscisse du point 1: " << coordAinterp1.x() << "ordonnée du point 1: " << coordAinterp1.y() << endl;
+    }
+    else
+    {
+        QMessageBox::warning(this, "Titre de la fenêtre", "Attention, vous devez d'abord choisir un MNT !");
+    }
+
+
+}
+
 
 MainWindow::~MainWindow()
 {

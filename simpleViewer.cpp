@@ -43,6 +43,24 @@ void Viewer::init()
 
         }
 
+        //redimensionner les spinbox
+
+        //on trie les points
+        for (int i(0); i<m_vector.length()-vertices_by_x-1; i++)
+        {
+            //premier triangle
+            m_vertexSort.push_back(m_vector[i]);
+            m_vertexSort.push_back(m_vector[i+vertices_by_x]);
+            m_vertexSort.push_back(m_vector[i+1]);
+
+            //deuxième triangle
+            m_vertexSort.push_back(m_vector[i+1]);
+            m_vertexSort.push_back(m_vector[i+vertices_by_x]);
+            m_vertexSort.push_back(m_vector[i+1+vertices_by_x]);
+
+        }
+
+        cout << m_vertexSort[0].x() << " " << m_vertexSort[1].x() << " " << m_vertexSort[2].x() << endl;
         //cout << "min : " << minCoord.x << " " << minCoord.y << " " << minCoord.z << endl;
 
         //cout << m_vector[2].x() << " " << m_vector[2+vertices_by_x].x() << endl;
@@ -93,7 +111,8 @@ void Viewer::draw()
   //cout << minCoord.x << minCoord.y << minCoord.z << endl;
 
   //glBegin(GL_TRIANGLES);
-  glColor3f(1.0f, 1.0f , 1.0f);
+/*
+    glColor3f(1.0f, 1.0f , 1.0f);
       for (int i(0); i<m_vector.length()-vertices_by_x-1; i++)
       {
           glBegin(GL_LINE_LOOP);
@@ -103,7 +122,7 @@ void Viewer::draw()
               glVertex3d(m_vector[i+vertices_by_x].x(), m_vector[i+vertices_by_x].y(), m_vector[i+vertices_by_x].z());//deuxième point
               glVertex3d(m_vector[i+1].x(), m_vector[i+1].y(), m_vector[i+1].z());//troisième point
           glEnd();
-
+*/
           //Deuxième triangle
           /*
           glBegin(GL_LINE_LOOP);
@@ -111,10 +130,18 @@ void Viewer::draw()
               glVertex3f(m_vector[i+vertices_by_x].x(), m_vector[i+vertices_by_x].y(), m_vector[i+vertices_by_x].z());//2eme point du premier triangle
               glVertex3f(m_vector[i+1+vertices_by_x].x(), m_vector[i+1+vertices_by_x].y(), m_vector[i+1+vertices_by_x].z());
           glEnd();
+
+           }
           */
 
-      }
-  //glEnd();
+    //on affiche le tableau trié avec glDrawArrays
+    qglColor(Qt::white);
+    glEnableClientState(GL_VERTEX_ARRAY);//on indique à la carte graphique que l'on va travailler avec des vertex array
+        glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
+        glDrawArrays(GL_LINE_LOOP, 0, m_vertexSort.size());//dessine les primitives
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+
 
 
   }
