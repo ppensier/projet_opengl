@@ -8,8 +8,8 @@ using namespace std;
 using namespace qglviewer;
 
 
-Viewer::Viewer(const QVector<QVector3D>& vector, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), vertices_by_x(4000)
+Viewer::Viewer(const QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent) :
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x(4000)
 {
 
 }
@@ -60,7 +60,14 @@ void Viewer::init()
 
         }
 
-        cout << m_vertexSort[0].x() << " " << m_vertexSort[1].x() << " " << m_vertexSort[2].x() << endl;
+        if (m_coordInterp.length() != 0)
+        {
+            cout << m_coordInterp.length() << endl;
+
+        }
+        //cout << m_coordInterp[0].x() << " " << m_coordInterp[0].y() << " " << m_coordInterp[1].x() << " " << m_coordInterp[1].y() << endl;
+
+        //cout << m_vertexSort[0].x() << " " << m_vertexSort[1].x() << " " << m_vertexSort[2].x() << endl;
         //cout << "min : " << minCoord.x << " " << minCoord.y << " " << minCoord.z << endl;
 
         //cout << m_vector[2].x() << " " << m_vector[2+vertices_by_x].x() << endl;
@@ -146,5 +153,90 @@ void Viewer::draw()
 
   }
 }
+
+/*
+
+bool Viewer::intervisibilitee(QVector3D pt1, QVector3D pt2)//prend en paramètre deux vecteurs
+{
+    //On appelle une fonction pour sortir les droites du rectangle
+    double calculateAxis(QVector3D pt1, QVector3D pt2);
+
+
+    }
+
+
+
+}
+*/
+
+void Viewer::calculateAxis(QVector3D pt1, QVector3D pt2)
+{
+    double x1, x2;
+
+    //on trouve d'abord la droite du 1er point
+    double soustraction1 = pt1.x()-m_vector[0].x();
+    int pas1 = 25;
+    int res1 = soustraction1/pas1;
+
+    double soustraction2 = pt2.x()-m_vector[0].x();
+    int pas2 = 25;
+    int res2 = soustraction2/pas2;
+
+    //cout << "le résultat de l'opération est le suivant: " << res1 << endl;
+
+    if (pt1.x() < pt2.x())
+    {
+        x1 = (res1+1)*pas1;
+        x2 = res2*pas2;
+    }
+    else
+    {
+        x1 = res1*pas1;
+        x2 = (res2+1)*pas2;
+    }
+
+    cout << "les deux droites sont: " << x1 << " et " << x2 << endl;
+
+}
+
+/*
+double x1, x2, y1, y2;
+//cout << coordAinterp.length() << endl;
+
+//recherche des abscisses
+int i = 0;
+while (i != 4000)//on ne parcourt que la permiere ligne
+{
+    //premier point considéré
+    if (m_vect[i].x() > coordAinterp[0].x())
+    {
+        //cout << "Arret: " << m_vect[i].x() << " " << coordAinterp[0].x() << endl;
+        x1 = m_vect[i].x();
+        x2 = m_vect[i-1].x();
+        cout << "les deux abscisses limites pour le 1er point sont: "  << x1 << " et " << x2 << endl;
+        break;
+    }
+    i++;
+}
+
+//recherche des ordonnées, donc parcours de tout le fichier
+int j = 0;
+while(j != m_vect.length())// on parcourt une colonne du fichier
+{
+    if (m_vect[j].y() < coordAinterp[0].y())
+    {
+            cout << "Arret sur les ordonnées!" << m_vect[j].y() << " " << coordAinterp[0].y() << endl;
+            y1 = m_vect[j].y();
+            y2 = m_vect[j-1].y();
+            cout << "les deux ordonnees limites pour le 1er point sont: "  << y1 << " et " << y2 << endl;
+            break;
+    }
+    j += 4000;
+}
+
+
+*/
+
+
 
 

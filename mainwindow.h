@@ -29,6 +29,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void read();
+    void changeLimitValues();
+    void interpolation(const QVector<QVector2D>& coordAinterp);
     //QVector<QVector3D>& vect(int taille);
 
 public slots:
@@ -44,8 +46,7 @@ protected:
     QVector<QVector3D> m_vect;
     QString nomF;
     Viewer* m_viewer;
-    QVector2D coordAinterp1;
-    QVector2D coordAinterp2;
+    QVector<QVector2D> coordAinterp;//vecteurs de coordonnées où l'on désire interpoler l'altitude.
 
 };
 

@@ -26,6 +26,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 */
+//    int b=5;
+//    int c=2;
+
+//    int d;
+
+//    d = b/c;
+
+//    cout << "resultat de la division: " << d << endl;
+
     MainWindow w;
     w.show();
     return a.exec();
