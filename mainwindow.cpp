@@ -180,7 +180,9 @@ void MainWindow::read(){
         cout << "fin de la lecture" << endl;
         m_viewer->init();
         changeLimitValues();
-        m_viewer->calculateAxis(QVector3D pt1(901010, 1901110, 0), QVector3D pt2(902111, 1900120, 0));
+        QVector3D pt1(901010, 1900175, 0);
+        QVector3D pt2(902111, 1900120, 0);
+        m_viewer->calculateAxis(pt1, pt2);
     }
     else
     {
