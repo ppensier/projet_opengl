@@ -1,4 +1,5 @@
-
+#include "plan.h"
+#include "droite.h"
 
 #include "simpleViewer.h"
 
@@ -78,32 +79,46 @@ void Viewer::init()
         setSceneBoundingBox(minCoord, maxCoord);
         showEntireScene();
         //restoreStateFromFile();
+
+        //m_texture_location = bindTexture(":/texture_sand_zoom.jpg");
+
+        //QVector<Qvector2D> m_textures;
+        QVector2D coordonnees;
+
+
+
     }
 }
-
 
 void Viewer::draw()
 {
 
   drawAxis();
 
-  if (m_vector.length() != 0)
-  {
-
-    drawAxis();
-
-    glClear(GL_COLOR_BUFFER_BIT); // clear screen
-    glLineWidth(1);
-
 //  glBegin(GL_LINE_LOOP);
 //      glColor3f(1.0f, 0.2f , 0.0f);
 //      glVertex3f(m_vector[1].x(),m_vector[1].y(),m_vector[1].z());
 //      glVertex3f(m_vector[10].x(),m_vector[10].y(),m_vector[10].z());
 //      glVertex3f(m_vector[20].x(),m_vector[20].y(),m_vector[20].z());
-//      glVertex3f(1.0, 1.0, 0.0);
+//      glVertex3f(0.0, 0.0, 1.0);
 //      glVertex3f(0.0, 0.0, 0.0);
 //      glVertex3f(1.0, 0.0, 0.0);
 //  glEnd();
+
+
+
+  if (m_vector.length() != 0)
+  {
+
+    drawAxis();
+
+
+
+    //glBindTexture(GL_TEXTURE_2D, m_texture_location);
+
+    glClear(GL_COLOR_BUFFER_BIT); // clear screen
+    glLineWidth(1);
+
 
 /*
     glBegin(GL_LINE_LOOP);
@@ -169,85 +184,6 @@ bool Viewer::intervisibilitee(QVector3D pt1, QVector3D pt2)//prend en paramètre
 }
 */
 
-void Viewer::calculateAxis(QVector3D pt1, QVector3D pt2)
-{
-    double x1, x2, y1, y2;
-
-    QVector3D p1, p2, p3;
-
-    //on trouve d'abord  le x de la droite du 1er point
-    double soustractionx1 = pt1.x()-m_vector[0].x();
-    int pasX = 25;
-    int resx1 = soustractionx1/pasX;
-
-    //on calcule le x de la droite la droite du 2eme point
-    double soustractionx2 = pt2.x()-m_vector[0].x();
-    int resx2 = soustractionx2/pasX;
-
-    double soustractiony1 = pt1.y()-m_vector[m_vector.length()-1].y();
-    int pasY = m_vector[0].y() - m_vector[4000].y();
-    int resy1 = soustractiony1/pasY;
-
-    double soustractiony2 = pt2.y()-m_vector[m_vector.length()-1].y();
-    int resy2 = soustractiony2/pasY;
-
-    if (pt1.x() < pt2.x())
-    {
-        x1 = (resx1+1)*pasX;
-        x2 = resx2*pasX;
-
-        if(pt1.y() < pt2.y())
-        {
-            y1 = (resy1+1)*pasY;
-            y2 = resy2*pasY;
-
-            //on récupère le triangle auquel appartient le point
-            p1.setX(m_vector[x1/pasX-1].x());
-            p2.setX(m_vector[x1/pasX].x());
-            p3.setX(m_vector[x1/pasX].x());
-
-            p1.setY(m_vector[].y());
-            p2.setY(m_vector[].y());
-            p3.setY(m_vector[].y());
-
-        }
-        else
-        {
-            y1 = resy1*pasY;
-            y2 = (resy2+1)*pasY;
-
-        }
-
-    }
-    else
-    {
-        x1 = resx1*pasX;
-        x2 = (resx2+1)*pasX;
-
-        if(pt1.y() < pt2.y())
-        {
-            y1 = (resy1+1)*pasY;
-            y2 = resy2*pasY;
-
-        }
-        else
-        {
-            y1 = resy1*pasY;
-            y2 = (resy2+1)*pasY;
-
-        }
-
-    }
-
-    cout << "les deux abscisses des deux droites sont: " << x1 << " et " << x2 << endl;
-    cout << "indices: " << x1/pasX << " et " << x2/pasX << endl;
-    cout << m_vector[x1/pasX].x() << " et " << m_vector[x2/pasX].x() << endl;
-
-    //cout << "L'ordonnée minimale est: " << m_vector[m_vector.length()-1].y() << endl;
-    cout << "les deux ordonnées des deux droites sont: " << y1 << " et " << y2 << endl;
-    //cout << pasY << " " << soustractiony2 << "=" << pt2.y() << "-" << m_vector[m_vector.length()-1].y() << endl;
-
-}
 
 /*
 double x1, x2, y1, y2;

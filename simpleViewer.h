@@ -15,8 +15,6 @@ public:
     //QVector<QVector3D>& operator=(const QVector<QVector3D>& vec);
     virtual void init();
 
-    void calculateAxis(QVector3D pt1, QVector3D pt2);
-
     //bool Viewer::intervisibilitee(QVector3D pt1, QVector3D pt2);
 
     qglviewer::Vec minCoord;

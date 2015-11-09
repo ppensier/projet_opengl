@@ -24,11 +24,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
         points.cpp \
     triangle.cpp \
-    simpleViewer.cpp
+    simpleViewer.cpp \
+    droite.cpp \
+    plan.cpp
 
 HEADERS  += mainwindow.h \
         points.h \
     triangle.h \
-    simpleViewer.h
+    simpleViewer.h \
+    droite.h \
+    plan.h
 
 FORMS    += mainwindow.ui

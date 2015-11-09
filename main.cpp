@@ -7,11 +7,32 @@
 #include <cstdlib>
 #include <iostream>
 
-using namespace std;
+#include "droite.h"
+#include "plan.h"
 
+using namespace std;
 
 int main(int argc, char *argv[])
 {
+
+    QVector3D pt1(1,0,0);
+    QVector3D pt2(1,1,0);
+    QVector3D pt3(1,1,1);
+    QVector3D vectN(1,1,0);
+
+    plan p(pt1, vectN);
+    p.afficherPlan();
+
+    droite d(pt2, pt3);
+    cout << d.a1 << endl;
+    d.afficherDroite();
+
+    //QVector3D resultat = d.calculIntersection(p);
+
+    //cout << resultat.x() << resultat.y() << resultat.z() << endl;
+
+    int res = d.position(p);
+    cout << res << endl;
 
     QApplication a(argc, argv);
 

@@ -182,7 +182,7 @@ void MainWindow::read(){
         changeLimitValues();
         QVector3D pt1(901010, 1900175, 0);
         QVector3D pt2(902111, 1900120, 0);
-        m_viewer->calculateAxis(pt1, pt2);
+        //m_viewer->calculateAxis(pt1, pt2);
     }
     else
     {
