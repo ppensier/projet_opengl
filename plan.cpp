@@ -20,3 +20,4 @@ void plan::afficherPlan()
      cout << "l'equation du plan: " << a << "*x + " << b << "*y + " << c << "*z + " << d << " = 0" << endl;
 
 }
+

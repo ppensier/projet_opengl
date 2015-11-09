@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->sBar->showMessage("...Bonjour...(5s)",5000);
 
-    //ui->verticalLayout_3->addStretch(100);
     ui->zonePTE->setFixedHeight(80);
     //ui->horizontalLayout_3->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -106,7 +105,7 @@ void MainWindow::chargerCoordonneesInterp()
             coordAinterp.append(point1);
             coordAinterp.append(point2);
 
-            interpolation(coordAinterp);//Interpolation des coordonnées choisies
+            //interpolation(coordAinterp);//Interpolation des coordonnées choisies
 
             //cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
 
@@ -180,9 +179,12 @@ void MainWindow::read(){
         cout << "fin de la lecture" << endl;
         m_viewer->init();
         changeLimitValues();
-        QVector3D pt1(901010, 1900175, 0);
-        QVector3D pt2(902111, 1900120, 0);
-        //m_viewer->calculateAxis(pt1, pt2);
+        QVector3D p1(120,120,10);
+        QVector3D p2(240,65,40);
+        if (m_viewer->intervisibility(p1, p2))
+            cout << "Intervisibilité OK" << endl;
+        else
+            cout << "Pas d'intervisibilité" << endl;
     }
     else
     {
@@ -190,6 +192,7 @@ void MainWindow::read(){
     }
 }
 
+/*
 void MainWindow::interpolation(const QVector<QVector2D>& coordAinterp)
 {
     double x1, x2, y1, y2;
@@ -227,7 +230,7 @@ void MainWindow::interpolation(const QVector<QVector2D>& coordAinterp)
     }
 
 }
-
+*/
 
 
 void MainWindow::changed(){
