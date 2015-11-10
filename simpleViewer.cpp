@@ -104,6 +104,13 @@ void Viewer::init()
         showEntireScene();
         //restoreStateFromFile();
 
+        const qglviewer::Camera* const camera = this->camera();
+
+        const Vec& vectPos(float(1),float(0),float(0));
+        //vectPos.setValue(0,0,0);
+
+        //camera->setPosition(const Vec& target	);
+
         //m_texture_location = bindTexture(":/texture_sand_zoom.jpg");
 
         //QVector<Qvector2D> m_textures;
@@ -282,6 +289,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
         float altiPoint = compareAlti(intersect,0);
 
+        cout << "toto1" << endl;
         cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
 
         if (altiPoint > intersect.z())
@@ -298,6 +306,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
         float altiPoint = compareAlti(intersect,1);
 
+        cout << "toto2" << endl;
         cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
 
         if (altiPoint > intersect.z())

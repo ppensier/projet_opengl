@@ -107,7 +107,13 @@ void MainWindow::chargerCoordonneesInterp()
 
             //interpolation(coordAinterp);//Interpolation des coordonnées choisies
 
-            //cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
+            cout << "les points à interpoler sont: " << endl;
+            cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
+
+            if (m_viewer->intervisibility(point1, point2))
+                cout << "Intervisibilité OK" << endl;
+            else
+                cout << "Pas d'intervisibilité" << endl;
 
         }
 
@@ -181,10 +187,10 @@ void MainWindow::read(){
         changeLimitValues();
         QVector3D p1(120,120,10);
         QVector3D p2(240,65,40);
-        if (m_viewer->intervisibility(p1, p2))
-            cout << "Intervisibilité OK" << endl;
-        else
-            cout << "Pas d'intervisibilité" << endl;
+//        if (m_viewer->intervisibility(p1, p2))
+//            cout << "Intervisibilité OK" << endl;
+//        else
+//            cout << "Pas d'intervisibilité" << endl;
     }
     else
     {
