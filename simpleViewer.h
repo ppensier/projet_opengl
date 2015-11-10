@@ -29,6 +29,7 @@ protected:
     int vertices_by_x;
     QVector<QVector3D> m_vertexSort;
     const QVector<QVector2D> m_coordInterp;
+    QVector<QVector3D> tabColor;
 
 private:
 

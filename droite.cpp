@@ -1,5 +1,6 @@
 #include "droite.h"
 #include "plan.h"
+#define PERMUTER(x,y) x ^= y, y ^= x, x ^= y
 
 #include <iostream>
 
@@ -71,71 +72,20 @@ void calculateAxis(QVector3D pt1, QVector3D pt2, double &x1, double &x2, double 
 
     int resx2 = pt2.x()/pasX;
 
-    //calcul le x de la droite la droite du 2eme point
-    //double soustractionx2 = pt2.x();
-
     //calcul des y
     int resy1 = pt1.y()/pasY;
     int resy2 = pt2.y()/pasY;
-
-    //double soustractiony1 = pt1.y()-m_vector[m_vector.length()-1].y();
-    //int pasY = m_vector[0].y();
-    //int resy1 = soustractiony1/pasY;
-    //
-    //double soustractiony2 = pt2.y();
-    //int resy2 = soustractiony2/pasY;
 
     if (pt1.x() < pt2.x())
     {
         x1 = (resx1+1)*pasX;
         x2 = resx2*pasX;
 
-        //p1.setX(m_vector[x1/pasX-1].x());
-        //p2.setX(m_vector[x1/pasX].x());
-        //p3.setX(m_vector[x1/pasX].x());
-
-        //if(pt1.y() < pt2.y())
-        //{
-        //    y1 = (resy1+1)*pasY;
-        //    y2 = resy2*pasY;
-        //
-        //    //p1.setY(m_vector[y1/pasY].y());
-        //    //p2.setY(m_vector[y1/pasY].y());
-        //    //p3.setY(m_vector[y1/pasY-1].y());
-        //
-        //}
-        //else
-        //{
-        //    y1 = resy1*pasY;
-        //    y2 = (resy2+1)*pasY;
-        //
-        //    //p1.setY(m_vector[y1/pasY+1].y());
-        //    //p2.setY(m_vector[y1/pasY+1].y());
-        //    //p3.setY(m_vector[y1/pasY].y());
-        //
-        //}
-
     }
     else//le point
     {
         x1 = resx1*pasX;
         x2 = (resx2+1)*pasX;
-
-        //p1.setX(m_vector[x1/pasX-1].x());
-        //p2.setX(m_vector[x1/pasX].x());
-        //p3.setX(m_vector[x1/pasX].x());
-        //
-        //if(pt1.y() < pt2.y())
-        //{
-        //    y1 = (resy1+1)*pasY;
-        //    y2 = resy2*pasY;
-        //}
-        //else
-        //{
-        //    y1 = resy1*pasY;
-        //    y2 = (resy2+1)*pasY;
-        //
-        //}
 
     }
 
@@ -149,10 +99,23 @@ void calculateAxis(QVector3D pt1, QVector3D pt2, double &x1, double &x2, double 
         y1 = resy1*pasY;
         y2 = (resy2+1)*pasY;
     }
+    if (x1 > x2)
+    {
+        swap(&x1, &x2);
+    }
+    if (y1 > y2)
+    {
+        swap(&y1, &y2);
+    }
 
-//    cout << "les deux abscisses des deux droites sont: " << x1 << " et " << x2 << endl;
-//    cout << "les deux ordonnées des deux droites sont: " << y1 << " et " << y2  << endl;
+}
 
+void swap(double* a, double* b)
+{
+  double temp;
+  temp = *a;
+  *a = *b;
+  *b = temp;
 }
 
 

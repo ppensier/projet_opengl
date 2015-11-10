@@ -17,7 +17,7 @@ QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x
 */
 
 Viewer::Viewer(QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x(4000)
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x(4000), tabColor(m_vector.length())
 {
 
 }
@@ -84,6 +84,16 @@ void Viewer::init()
 
         }
 
+        //tableau de couleurs
+        tabColor.clear();
+        tabColor.resize(m_vertexSort.length());
+        for ( int i = 0; i<m_vertexSort.length(); ++i)
+        {
+            tabColor[i].setX(0);
+            tabColor[i].setY((m_vertexSort[i].z()-minCoord.z) / (maxCoord.z -minCoord.z));
+            tabColor[i].setZ(0);
+        }
+
         if (m_coordInterp.length() != 0)
         {
             cout << m_coordInterp.length() << endl;
@@ -106,7 +116,7 @@ void Viewer::init()
 
         const qglviewer::Camera* const camera = this->camera();
 
-        const Vec& vectPos(float(1),float(0),float(0));
+        //const Vec& vectPos(float(1),float(0),float(0));
         //vectPos.setValue(0,0,0);
 
         //camera->setPosition(const Vec& target	);
@@ -143,6 +153,12 @@ void Viewer::draw()
 
     drawAxis();
 
+
+    //glBegin(GL_POINT);
+    //glPointSize(50);
+    //glColor3f(1.0f, 0.0f , 0.0f);
+    //    glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
+    //glEnd();
 
     //glBindTexture(GL_TEXTURE_2D, m_texture_location);
 
@@ -190,6 +206,7 @@ void Viewer::draw()
     glEnableClientState(GL_VERTEX_ARRAY);//on indique à la carte graphique que l'on va travailler avec des vertex array
     glEnableClientState (GL_COLOR_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
+        glColorPointer(3, GL_FLOAT, 0, tabColor.constData());
         glDrawArrays(GL_LINE_LOOP, 0, m_vertexSort.size());//dessine les primitives
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
@@ -273,59 +290,147 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     QVector3D vectNabs(1,0,0);
     QVector3D vectNord(0,1,0);
-    QVector3D vectOblique(-0.5,-0.5,0);
+    QVector3D vectOblique(0.5,-0.5,0);
 
-    //parcours de toutes les abscisses
+    //PARCOURS DES ABSCISSES (= les droites verticales)
     for (int i(x1); i<=x2; i+=pasX)
     {
         //cout << "premiere ligne" << endl;
 
         plan p(QVector3D(i, y1, 0), vectNabs);
 
-        //on récupère les coordonnées de l'intersection de la droite et du plan
-        QVector3D intersect = d.calculIntersection(p);
+        if (d.position(p) == 2)//i.e la droite appartient au plan
+        {
+            //on cherche si l'atitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
+            //la droite a pour coordonnées x1
+            for (int j(y1/pasY); j<=y2/pasY; j+=4000)
+            {
+                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
+                {
+                    return false;
+                }
 
-        cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
+            }
 
-        float altiPoint = compareAlti(intersect,0);
 
-        cout << "toto1" << endl;
-        cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+        }
 
-        if (altiPoint > intersect.z())
-            return false;
-//            cout << "toto" << endl;
+        //droite parallèle au plan verticaux
+        else if(d.position(p) == 1 && ((int)pt1.x()%pasX) != 0)//si la droite est parallèle aux plans et n'est pas un plan vertical
+        {
+            //on bascule sur les verifications des ordonnées
+            for (int j(y1); j<=y2; j+=pasY)
+            {
+                plan p(QVector3D(x1, j, 0), vectNord);
+
+                QVector3D intersect = d.calculIntersection(p);
+
+                //cout << "test2" << endl;
+                float altiPoint = compareAlti(intersect,1);
+
+                //cout << "toto2" << endl;
+                //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+
+                if (altiPoint > intersect.z())
+                    return false;
+
+            }
+
+        }
+
+        else//droite en configuration normale
+        {
+            //on récupère les coordonnées de l'intersection de la droite et du plan
+            QVector3D intersect = d.calculIntersection(p);
+
+            //cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
+
+            //cout << "test1" << endl;
+            float altiPoint = compareAlti(intersect,0);
+
+            //cout << "toto1" << endl;
+            //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+
+            if (altiPoint > intersect.z())
+                return false;
+        }
+
     }
 
-    //Parcours des ordonnées
-    for (int i(y1); i<=y2; i+=pasY)
+  //PARCOURS DES ORDONNEES (=les droites horizontales)
+    for (int j(y1); j<=y2; j+=pasY)
     {
-        plan p(QVector3D(x1, i, 0), vectNord);
+        plan p(QVector3D(x1, j, 0), vectNord);
 
-        QVector3D intersect = d.calculIntersection(p);
+        if (d.position(p) == 2)//i.e la droite appartient au plan
+        {
+            for (int j(x1/pasX); j<=x2/pasX; j++)
+            {
+                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
+                {
+                    return false;
+                }
 
-        float altiPoint = compareAlti(intersect,1);
+            }
 
-        cout << "toto2" << endl;
-        cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+        }
 
-        if (altiPoint > intersect.z())
-            return false;
-            //cout << "toto" << endl;
+        else if (d.position(p) == 1 && ((int)pt1.y()%pasY) != 0)//si la droite est parallèle et n'est pas un multiple de 25
+        {
+
+            //on bascule sur les verifications des abscisses
+            for (int j(x1); j<=x2; j+=pasX)
+            {
+                plan p(QVector3D(x1, j, 0), vectNord);
+
+                QVector3D intersect = d.calculIntersection(p);
+
+                //cout << "test2" << endl;
+                float altiPoint = compareAlti(intersect,1);
+
+                //cout << "toto2" << endl;
+                //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+
+                if (altiPoint > intersect.z())
+                    return false;
+
+            }
+
+        }
+
+
+        else
+        {
+
+            QVector3D intersect = d.calculIntersection(p);
+
+            //cout << "test2" << endl;
+            float altiPoint = compareAlti(intersect,1);
+
+            //cout << "toto2" << endl;
+            //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+
+            if (altiPoint > intersect.z())
+                return false;
+        }
+
     }
 
-    //Parcours des droites obliques
+    //PARCOURS DES DROITES OBLIQUES
     for (int i(y1); i<=y2; i+=pasY)
     {
         plan p(QVector3D(x1, i, 0), vectOblique);
 
         QVector3D intersect = d.calculIntersection(p);
 
+        //cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
+
         float altiPoint = compareAlti(intersect,2);//code 2 pour les droites obliques
+        //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+
 
         if (altiPoint > intersect.z())
             return false;
-            //cout << "toto" << endl;
 
     }
 
@@ -349,37 +454,41 @@ float Viewer::compareAlti(QVector3D intersect, int code)
     {
         case 0: {//on teste les droites verticales
 
-        int valeurSup = (resY+1)*25;
-        int valeurInf = resY*25;
+            int valeurSup = (resY+1)*25;
+            int valeurInf = resY*25;
 
-        for (int j(0); j<=m_vector.length(); j += 4000)
-        {
-            if (m_vector[j].y() == valeurSup)
+            for (int j(0); j<=m_vector.length(); j += 4000)
             {
-                pt1Cherche.setX(float(intersect.x()));
-                pt1Cherche.setY(float(valeurSup));
-                pt1Cherche.setZ(m_vector[j].z());
+                if (m_vector[j].y() == valeurSup)
+                {
+                    pt1Cherche.setX(float(intersect.x()));
+                    pt1Cherche.setY(float(valeurSup));
+                    pt1Cherche.setZ(m_vector[j].z());
 
-                pt2Cherche.setX(float(intersect.x()));
-                pt2Cherche.setY(float(valeurInf));
-                pt2Cherche.setZ(m_vector[j+4000].z());
+                    pt2Cherche.setX(float(intersect.x()));
+                    pt2Cherche.setY(float(valeurInf));
+                    pt2Cherche.setZ(m_vector[j+4000].z());
 
+                }
             }
-        }
 
-        //cout << "les cooordonnées du premier point sont: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
-        //cout << "les cooordonnées du deuxieme point sont: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
+            //cout << "teste les droites verticales" << endl;
+            //cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
+            //cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
 
-        //puis on calcule les coordonnées de l'altitude du point situé sur la droite
-        droite di(pt1Cherche, pt2Cherche);
+            //puis on calcule les coordonnées de l'altitude du point situé sur la droite
+            droite di(pt1Cherche, pt2Cherche);
 
-        float lambdaDroite = (intersect.y() - di.b2)/di.a2;
+            float lambdaDroite = (intersect.y() - di.b2)/di.a2;
 
-        altiPoint = ((di.a3)*lambdaDroite) + di.b3;
+            altiPoint = ((di.a3)*lambdaDroite) + di.b3;
+            break;
 
         }
 
         case 1: {//on teste les droites horizontales
+
+            cout << "ne doit pas rentrer ici!" << endl;
 
             int valeurSup = (resX+1)*25;
             int valeurInf = resX*25;
@@ -399,48 +508,66 @@ float Viewer::compareAlti(QVector3D intersect, int code)
                 }
             }
 
+            //cout << "teste les droites horizontales" << endl;
+            //cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
+            //cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
+
             droite di(pt1Cherche, pt2Cherche);
 
             float lambdaDroite = (intersect.x() - di.b1)/di.a1;
 
             altiPoint = ((di.a3)*lambdaDroite) + di.b3;
+            break;
 
         }
 
-        case 2: {
+        case 2: {//teste les droites obliques
 
-            int valeurSup = (resX+1)*25;
-            int valeurInf = resX*25;
+            int valeurSupX = (resX+1)*25;
+            int valeurInfX = resX*25;
+            int valeurSupY = (resY+1)*25;
+            int valeurInfY = resY*25;
 
-            for (int j(0); j<=4000; j++)
+            for (int j(0); j<m_vector.length(); j++)
             {
-                if (m_vector[j].x() == valeurSup)
+                if (m_vector[j].x() == valeurSupX && m_vector[j].y() == valeurSupY)
 
                 {
 
-                    pt1Cherche.setX(valeurSup);
-                    pt1Cherche.setY(m_vector[j].y());//on choisit le y du point en question
+                    pt1Cherche.setX(valeurSupX);
+                    pt1Cherche.setY(valeurSupY);//on choisit le y du point en question
                     pt1Cherche.setZ(m_vector[j].z());
 
-                    pt2Cherche.setX(valeurInf);
-                    pt2Cherche.setY(m_vector[j+4000].y());
-                    pt2Cherche.setZ(m_vector[j+4000-1].y());
+                    pt2Cherche.setX(valeurInfX);
+                    pt2Cherche.setY(valeurInfY);
+                    pt2Cherche.setZ(m_vector[j+4000-1].z());
 
                 }
             }
 
+            //cout << "teste les droites obliques" << endl;
+            //cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
+            //cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
+
             droite di(pt1Cherche, pt2Cherche);
 
             float lambdaDroite = (intersect.x() - di.b1)/di.a1;
 
             altiPoint = ((di.a3)*lambdaDroite) + di.b3;
+            break;
 
         }
 
     }
 
-
     return altiPoint;
 
 }
+
+
+
+
+
+
+
 

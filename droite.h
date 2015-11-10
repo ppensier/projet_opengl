@@ -23,7 +23,7 @@ public:
     double b3;
 };
 
-
+void swap(double* a, double* b);
 void calculateAxis(QVector3D pt1, QVector3D pt2, double &x1, double &x2, double &y1, double &y2);
 
 //bool intervisibility(QVector3D pt1, QVector3D pt2);
