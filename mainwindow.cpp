@@ -116,9 +116,18 @@ void MainWindow::chargerCoordonneesInterp()
             m_viewer->draw();
 
             if (m_viewer->intervisibility(point1, point2))
-                cout << "Intervisibilité OK" << endl;
+            {    cout << "Intervisibilité OK" << endl;
+                ui->zonePTE->appendPlainText("Les deux points sonts visibles");
+            }
             else
+            {
                 cout << "Pas d'intervisibilité" << endl;
+                QMessageBox msgBox;
+                msgBox.setIcon(QMessageBox::Information);
+                msgBox.setWindowTitle("");
+                msgBox.setText("Pas d'intervisibilité entre les deux points!");
+                msgBox.exec();
+            }
         }
 
         //cout << ui->y1->value() << endl;

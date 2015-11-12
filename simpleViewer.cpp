@@ -115,7 +115,8 @@ void Viewer::init()
 
         const Vec vectPos(0,0,0);
 
-        //camera->setPosition(vectPos);
+        //if (m_coordInterp.length() != 0)
+            //camera->setPosition(m_coordInterp[0]);
 
     }
 }
@@ -155,30 +156,17 @@ void Viewer::draw()
 {
 
   drawAxis();
-  glLineWidth(100.0);
-  glBegin(GL_LINES);
-      glColor3f(1.0f, 0.0f, 0.0f);
-      glVertex3f(0,0,0);
-      glVertex3f(1,1,1);
-  glEnd();
+//  glLineWidth(100.0);
+//  glBegin(GL_LINES);
+//      glColor3f(1.0f, 0.0f, 0.0f);
+//      glVertex3f(0,0,0);
+//      glVertex3f(1,1,1);
+//  glEnd();
 
   if (m_vector.length() != 0)
   {
 
-      cout << "les coordonnées limites sont: " << minCoord.x << " " << minCoord.y << " " << minCoord.z << endl;
-      cout << "les coordonnées limites sont: " << maxCoord.x << " " << maxCoord.y << " " << maxCoord.z << endl;
-      cout << m_vector[0].x() << " " << m_vector[0].y() << " " << m_vector[0].z() << endl;
-      cout << m_vector[m_vector.length()-1].x() << " " << m_vector[m_vector.length()-1].y() << " " << m_vector[m_vector.length()-1].z() << endl;
-
-      cout << "Draw line" << endl;
-      glLineWidth(100.0);
-      glColor3f(1.0f, 0.0f, 0.0f);
-      glBegin(GL_LINES);
-          glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-          glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-      glEnd();
-
-    drawAxis();
+      drawAxis();
 
 //    glColor3f(1.0f, 0.0f , 0.0f);
 //    glLineWidth(50.0);
@@ -196,16 +184,6 @@ void Viewer::draw()
 
     glClear(GL_COLOR_BUFFER_BIT); // clear screen
     //glLineWidth(1);
-
-/*
-    glBegin(GL_LINE_LOOP);
-    glColor3f(1.0f, 0.2f , 0.0f);
-      for (int i(0); i<m_vector.length(); i++)
-      {
-          glVertex3d(m_vector[i].x(), m_vector[i].y(), m_vector[i].z());
-      }
-    glEnd();
-*/
 
   //cout << minCoord.x << minCoord.y << minCoord.z << endl;
 
@@ -235,6 +213,7 @@ void Viewer::draw()
 
     //on affiche le tableau trié avec glDrawArrays
     qglColor(Qt::white);
+    glLineWidth(1.0);
     glEnableClientState(GL_VERTEX_ARRAY);//on indique à la carte graphique que l'on va travailler avec des vertex array
     glEnableClientState (GL_COLOR_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
@@ -243,6 +222,24 @@ void Viewer::draw()
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
+    if (m_coordInterp.length() != 0)
+    {
+    glLineWidth(1.0);
+    glPointSize(5.0);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINES);
+        //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+        //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+        glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+        glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+    glEnd();
+
+    glBegin(GL_POINTS);
+        glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+        glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+    glEnd();
+
+    }
 
 //    if (m_coordInterp.length() != 0)
 //    {
