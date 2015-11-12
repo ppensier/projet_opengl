@@ -8,15 +8,7 @@
 using namespace std;
 using namespace qglviewer;
 
-/*
-Viewer::Viewer(const QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x(4000)
-{
-
-}
-*/
-
-Viewer::Viewer(QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent) :
+Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, QWidget *parent) :
 QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), tabColor(m_vector.length())
 {
 
@@ -61,30 +53,33 @@ void Viewer::init()
             if (m_vector[i].z() < minCoord.z)
                 minCoord.z = m_vector[i].z();
 
-            //cout << m_vector[i].x() << endl;
-            //cout << m_vector[i].x() - m_vector[0].x() << endl;
-
         }
 
-        //definition du pas en y
-
-
-        cout << "le pas en Y est: " << pasY << endl;
-        cout << "m_vector(x1): " << m_vector[5].x() << endl;
-        //redimensionner les spinbox
-
         //on trie les points
-        for (int i(0); i<m_vector.length()-vertices_by_x-1; i++)
+        for (int i(0); i<m_vector.length()-vertices_by_x; i++)
         {
             //premier triangle
             m_vertexSort.push_back(m_vector[i]);
             m_vertexSort.push_back(m_vector[i+vertices_by_x]);
             m_vertexSort.push_back(m_vector[i+1]);
 
+            //si l'on atteint la fin de la ligne, on revient en arrière
+
+            if ((i+1)%vertices_by_x == vertices_by_x-1 && (i+1) != m_vector.length()-vertices_by_x) //i+1 est au bout de la ligne
+            {
+                //cout << ligne << endl;
+                //cout << "vous êtes à la ligne: " << ligne << endl;
+                for (int j = i+1+vertices_by_x; j > i + 1; j--)
+                {
+                    m_vertexSort.push_back(m_vector[j]);
+                }
+                i++;
+            }
+
             //deuxième triangle
-            m_vertexSort.push_back(m_vector[i+1]);
-            m_vertexSort.push_back(m_vector[i+vertices_by_x]);
-            m_vertexSort.push_back(m_vector[i+1+vertices_by_x]);
+//            m_vertexSort.push_back(m_vector[i+1]);
+//            m_vertexSort.push_back(m_vector[i+vertices_by_x]);
+//            m_vertexSort.push_back(m_vector[i+1+vertices_by_x]);
 
         }
 
@@ -100,8 +95,7 @@ void Viewer::init()
 
         if (m_coordInterp.length() != 0)
         {
-            cout << m_coordInterp.length() << endl;
-
+            cout << "INTERPOLATION: " << m_coordInterp.length() << endl;
         }
 
         //cout << m_coordInterp[0].x() << " " << m_coordInterp[0].y() << " " << m_coordInterp[1].x() << " " << m_coordInterp[1].y() << endl;
@@ -115,22 +109,13 @@ void Viewer::init()
         //cout << "max en x: " << maxCoord.x << endl;
 
         setSceneBoundingBox(minCoord, maxCoord);
-        showEntireScene();
-        //restoreStateFromFile();
+        showEntireScene();      
 
         const qglviewer::Camera* const camera = this->camera();
 
-        //const Vec& vectPos(float(1),float(0),float(0));
-        //vectPos.setValue(0,0,0);
+        const Vec vectPos(0,0,0);
 
-        //camera->setPosition(const Vec& target	);
-
-        //m_texture_location = bindTexture(":/texture_sand_zoom.jpg");
-
-        //QVector<Qvector2D> m_textures;
-        QVector2D coordonnees;
-
-
+        //camera->setPosition(vectPos);
 
     }
 }
@@ -170,35 +155,47 @@ void Viewer::draw()
 {
 
   drawAxis();
-
-//  glBegin(GL_LINE_LOOP);
-//      glColor3f(1.0f, 0.2f , 0.0f);
-//      glVertex3f(m_vector[1].x(),m_vector[1].y(),m_vector[1].z());
-//      glVertex3f(m_vector[10].x(),m_vector[10].y(),m_vector[10].z());
-//      glVertex3f(m_vector[20].x(),m_vector[20].y(),m_vector[20].z());
-//      glVertex3f(0.0, 0.0, 1.0);
-//      glVertex3f(0.0, 0.0, 0.0);
-//      glVertex3f(1.0, 0.0, 0.0);
-//  glEnd();
-
-
+  glLineWidth(100.0);
+  glBegin(GL_LINES);
+      glColor3f(1.0f, 0.0f, 0.0f);
+      glVertex3f(0,0,0);
+      glVertex3f(1,1,1);
+  glEnd();
 
   if (m_vector.length() != 0)
   {
 
+      cout << "les coordonnées limites sont: " << minCoord.x << " " << minCoord.y << " " << minCoord.z << endl;
+      cout << "les coordonnées limites sont: " << maxCoord.x << " " << maxCoord.y << " " << maxCoord.z << endl;
+      cout << m_vector[0].x() << " " << m_vector[0].y() << " " << m_vector[0].z() << endl;
+      cout << m_vector[m_vector.length()-1].x() << " " << m_vector[m_vector.length()-1].y() << " " << m_vector[m_vector.length()-1].z() << endl;
+
+      cout << "Draw line" << endl;
+      glLineWidth(100.0);
+      glColor3f(1.0f, 0.0f, 0.0f);
+      glBegin(GL_LINES);
+          glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+          glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+      glEnd();
+
     drawAxis();
 
+//    glColor3f(1.0f, 0.0f , 0.0f);
+//    glLineWidth(50.0);
+//    glBegin(GL_LINE);
+//        glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+//        glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
 
-    //glBegin(GL_POINT);
-    //glPointSize(50);
-    //glColor3f(1.0f, 0.0f , 0.0f);
-    //    glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
-    //glEnd();
+//    glEnd();
 
-    //glBindTexture(GL_TEXTURE_2D, m_texture_location);
+//    glBegin(GL_POINT);
+//    glPointSize(50);
+//    glColor3f(1.0f, 0.0f , 0.0f);
+//        glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
+//    glEnd();
 
     glClear(GL_COLOR_BUFFER_BIT); // clear screen
-    glLineWidth(1);
+    //glLineWidth(1);
 
 /*
     glBegin(GL_LINE_LOOP);
@@ -242,69 +239,28 @@ void Viewer::draw()
     glEnableClientState (GL_COLOR_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
         glColorPointer(3, GL_FLOAT, 0, tabColor.constData());
-        glDrawArrays(GL_LINE_LOOP, 0, m_vertexSort.size());//dessine les primitives
+        glDrawArrays(GL_LINE_STRIP, 0, m_vertexSort.size());//dessine les primitives
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
+
+
+//    if (m_coordInterp.length() != 0)
+//    {
+//        //cout << "DRAW INTERPOLATION: " << m_coordInterp.length() << endl;
+//        glBegin(GL_LINE);
+//            glLineWidth(50.0);
+//            glColor3f(1.0f, 0.0f, 0.0f);
+//            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+//            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+//        glEnd();
+
+    //}
 
   }
 }
 
-/*
-
-bool Viewer::intervisibilitee(QVector3D pt1, QVector3D pt2)//prend en paramètre deux vecteurs
-{
-    //On appelle une fonction pour sortir les droites du rectangle
-    double calculateAxis(QVector3D pt1, QVector3D pt2);
-
-
-    }
-
-}
-*/
-
-
-/*
-double x1, x2, y1, y2;
-//cout << coordAinterp.length() << endl;
-
-//recherche des abscisses
-int i = 0;
-while (i != 4000)//on ne parcourt que la permiere ligne
-{
-    //premier point considéré
-    if (m_vect[i].x() > coordAinterp[0].x())
-    {
-        //cout << "Arret: " << m_vect[i].x() << " " << coordAinterp[0].x() << endl;
-        x1 = m_vect[i].x();
-        x2 = m_vect[i-1].x();
-        cout << "les deux abscisses limites pour le 1er point sont: "  << x1 << " et " << x2 << endl;
-        break;
-    }
-    i++;
-}
-
-//recherche des ordonnées, donc parcours de tout le fichier
-int j = 0;
-while(j != m_vect.length())// on parcourt une colonne du fichier
-{
-    if (m_vect[j].y() < coordAinterp[0].y())
-    {
-            cout << "Arret sur les ordonnées!" << m_vect[j].y() << " " << coordAinterp[0].y() << endl;
-            y1 = m_vect[j].y();
-            y2 = m_vect[j-1].y();
-            cout << "les deux ordonnees limites pour le 1er point sont: "  << y1 << " et " << y2 << endl;
-            break;
-    }
-    j += 4000;
-}
-
-*/
-
 bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 {
-
-    //premiere chose à faire: vérifier que les points ne sont pas sous terre
-
 
     double x1 = 0;
     double x2 = 0;
@@ -319,6 +275,9 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     cout << "les deux abscisses des deux droites sont: " << x1 << " et " << x2 << endl;
     cout << "les deux ordonnées des deux droites sont: " << y1 << " et " << y2  << endl;
+
+    //premiere chose à faire: vérifier que les points ne sont pas sous terre
+
 
     QVector3D vectNabs(1,0,0);
     QVector3D vectNord(0,1,0);
@@ -429,7 +388,6 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             }
 
         }
-
 
         else
         {

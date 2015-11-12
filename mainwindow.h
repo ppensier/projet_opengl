@@ -46,7 +46,7 @@ protected:
     QVector<QVector3D> m_vect;
     QString nomF;
     Viewer* m_viewer;
-    QVector<QVector2D> coordAinterp;//vecteurs de coordonnées où l'on désire interpoler l'altitude.
+    QVector<QVector3D> coordAinterp;//vecteurs de coordonnées où l'on désire interpoler l'altitude.
 
 };
 

@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->horizontalLayout_3->setSizeConstraint(QLayout::SetFixedSize);
 
     //Initialisation du paramètre m_vect
-    //m_vect();
+
     m_viewer = new Viewer(m_vect, coordAinterp, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
@@ -99,22 +99,26 @@ void MainWindow::chargerCoordonneesInterp()
         }
         else
         {
-            QVector2D point1(ui->x1->value(), ui->y1->value());
-            QVector2D point2(ui->x2->value(), ui->y2->value());
+            QVector3D point1(ui->x1->value(), ui->y1->value(), ui->z1->value());
+            QVector3D point2(ui->x2->value(), ui->y2->value(), ui->z2->value());
 
             coordAinterp.append(point1);
             coordAinterp.append(point2);
 
             //interpolation(coordAinterp);//Interpolation des coordonnées choisies
+            QString distance = QString::number(point1.distanceToPoint(point2));
 
+            ui->zonePTE->clear();
+            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est: " + distance);
+            //ui->zonePTE->appendPlainText(QString::number(point1.distanceToPoint(point2)));
             cout << "les points à interpoler sont: " << endl;
             cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
+            m_viewer->draw();
 
             if (m_viewer->intervisibility(point1, point2))
                 cout << "Intervisibilité OK" << endl;
             else
                 cout << "Pas d'intervisibilité" << endl;
-
         }
 
         //cout << ui->y1->value() << endl;
@@ -140,6 +144,11 @@ void MainWindow::changeLimitValues()
         ui->y1->setMaximum(int(m_viewer->maxCoord.y));
         ui->y2->setMinimum(int(m_viewer->minCoord.y));
         ui->y2->setMaximum(int(m_viewer->maxCoord.y));
+        ui->z1->setMinimum(int(m_viewer->minCoord.z));
+        ui->z1->setMaximum(int(m_viewer->maxCoord.z));
+        ui->z2->setMinimum(int(m_viewer->minCoord.z));
+        ui->z2->setMaximum(int(m_viewer->maxCoord.z));
+
     }
 }
 
@@ -197,46 +206,6 @@ void MainWindow::read(){
         ui->zonePTE->appendPlainText("impossible de lire le fichier");
     }
 }
-
-/*
-void MainWindow::interpolation(const QVector<QVector2D>& coordAinterp)
-{
-    double x1, x2, y1, y2;
-    //cout << coordAinterp.length() << endl;
-
-    //recherche des abscisses
-    int i = 0;
-    while (i != 4000)//on ne parcourt que la permiere ligne
-    {
-        //premier point considéré
-        if (m_vect[i].x() > coordAinterp[0].x())
-        {
-            //cout << "Arret: " << m_vect[i].x() << " " << coordAinterp[0].x() << endl;
-            x1 = m_vect[i].x();
-            x2 = m_vect[i-1].x();
-            cout << "les deux abscisses limites pour le 1er point sont: "  << x1 << " et " << x2 << endl;
-            break;
-        }
-        i++;
-    }
-
-    //recherche des ordonnées, donc parcours de tout le fichier
-    int j = 0;
-    while(j != m_vect.length())// on parcourt une colonne du fichier
-    {
-        if (m_vect[j].y() < coordAinterp[0].y())
-        {
-                cout << "Arret sur les ordonnées!" << m_vect[j].y() << " " << coordAinterp[0].y() << endl;
-                y1 = m_vect[j].y();
-                y2 = m_vect[j-1].y();
-                cout << "les deux ordonnees limites pour le 1er point sont: "  << y1 << " et " << y2 << endl;
-                break;
-        }
-        j += 4000;
-    }
-
-}
-*/
 
 
 void MainWindow::changed(){
