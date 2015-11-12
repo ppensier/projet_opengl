@@ -16,6 +16,8 @@ public:
     bool intervisibility(QVector3D pt1, QVector3D pt2);
     float compareAlti(QVector3D intersect, int code);
 
+    void computeLineLength();
+
     qglviewer::Vec minCoord;
     qglviewer::Vec maxCoord;
 
@@ -27,9 +29,12 @@ protected:
 //    const QVector<QVector3D>& m_vector;
     QVector<QVector3D>& m_vector;
     int vertices_by_x;
+    int m_nbLines;
     QVector<QVector3D> m_vertexSort;
     const QVector<QVector2D> m_coordInterp;
     QVector<QVector3D> tabColor;
+    int pasX;
+    int pasY;
 
 private:
 

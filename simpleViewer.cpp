@@ -17,7 +17,7 @@ QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x
 */
 
 Viewer::Viewer(QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), vertices_by_x(4000), tabColor(m_vector.length())
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), tabColor(m_vector.length())
 {
 
 }
@@ -35,6 +35,10 @@ void Viewer::init()
     if (m_vector.length() != 0)
     {
 
+        computeLineLength();
+        double pasY = m_vector[0].y() - m_vector[vertices_by_x].y();
+        double pasX = m_vector[1].x() - m_vector[0].x();
+        cout << "le pas en x est de: " << pasX << ", le pas en y est de: " << pasY << endl;
         double minimumX = m_vector[0].x();
         double minimumY = m_vector[m_vector.length()-1].y();
 
@@ -63,7 +67,7 @@ void Viewer::init()
         }
 
         //definition du pas en y
-        double pasY = m_vector[0].y() - m_vector[4000].y();
+
 
         cout << "le pas en Y est: " << pasY << endl;
         cout << "m_vector(x1): " << m_vector[5].x() << endl;
@@ -130,6 +134,37 @@ void Viewer::init()
 
     }
 }
+
+
+void Viewer::computeLineLength()
+{
+    const unsigned long NOT_COMPUTED = 0;
+    unsigned long lineLength_prec = NOT_COMPUTED;
+    vertices_by_x = 1;
+    m_nbLines = 1;
+
+    // at each loop, m_lineLenght takes 1 if "m_vertices[i].y == m_vertices[i+1].y".
+    // m_lineLenght begin at 1.
+    for(unsigned long i = 0 ; i < m_vector.size()-1; ++i, ++vertices_by_x)
+    {
+          // when "m_vertices[i].y != m_vertices[i+1].y", we compare m_lineLenght and lineLenght_prec
+          // to see if they have the same number of points.
+          if (m_vector[i].y() != m_vector[i+1].y())
+          {
+              if(vertices_by_x != lineLength_prec)
+                  cout << "Lines " << i << " and " << i+1 << " don't have the same length.";
+
+             lineLength_prec = vertices_by_x;
+             vertices_by_x = 0;
+             ++m_nbLines;
+          }
+    }
+
+    vertices_by_x = lineLength_prec;
+    cout << "la longueur d'une ligne est de : " << vertices_by_x << endl;
+    cout << "il y a : " << m_nbLines << " lignes" << endl;
+}
+
 
 void Viewer::draw()
 {
@@ -271,9 +306,6 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
     //premiere chose à faire: vérifier que les points ne sont pas sous terre
 
 
-    int pasX = 25;
-    int pasY = 25;
-
     double x1 = 0;
     double x2 = 0;
     double y1 = 0;
@@ -303,7 +335,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         {
             //on cherche si l'atitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
             //la droite a pour coordonnées x1
-            for (int j(y1/pasY); j<=y2/pasY; j+=4000)
+            for (int j(y1/pasY); j<=y2/pasY; j+=vertices_by_x)
             {
                 if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
                 {
@@ -428,7 +460,6 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         float altiPoint = compareAlti(intersect,2);//code 2 pour les droites obliques
         //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
 
-
         if (altiPoint > intersect.z())
             return false;
 
@@ -447,17 +478,17 @@ float Viewer::compareAlti(QVector3D intersect, int code)
     //cout << "indice de l'abscisse: " << intersect.x()/25 << endl;
 
     //on récupère les deux points qui entourent le point d'intersection
-    int resY = intersect.y()/25;
-    int resX = intersect.x()/25;
+    int resY = intersect.y()/pasY;
+    int resX = intersect.x()/pasX;
 
     switch (code)
     {
         case 0: {//on teste les droites verticales
 
-            int valeurSup = (resY+1)*25;
-            int valeurInf = resY*25;
+            int valeurSup = (resY+1)*pasX;
+            int valeurInf = resY*pasY;
 
-            for (int j(0); j<=m_vector.length(); j += 4000)
+            for (int j(0); j<=m_vector.length(); j += vertices_by_x)
             {
                 if (m_vector[j].y() == valeurSup)
                 {
@@ -467,7 +498,7 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
                     pt2Cherche.setX(float(intersect.x()));
                     pt2Cherche.setY(float(valeurInf));
-                    pt2Cherche.setZ(m_vector[j+4000].z());
+                    pt2Cherche.setZ(m_vector[j+vertices_by_x].z());
 
                 }
             }
@@ -490,10 +521,10 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
             cout << "ne doit pas rentrer ici!" << endl;
 
-            int valeurSup = (resX+1)*25;
-            int valeurInf = resX*25;
+            int valeurSup = (resX+1)*pasX;
+            int valeurInf = resX*pasY;
 
-            for (int j(0); j<=4000; j++)
+            for (int j(0); j<=vertices_by_x; j++)
             {
                 if (m_vector[j].x() == valeurInf)
                 {
@@ -523,10 +554,10 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
         case 2: {//teste les droites obliques
 
-            int valeurSupX = (resX+1)*25;
-            int valeurInfX = resX*25;
-            int valeurSupY = (resY+1)*25;
-            int valeurInfY = resY*25;
+            int valeurSupX = (resX+1)*pasX;
+            int valeurInfX = resX*pasX;
+            int valeurSupY = (resY+1)*pasY;
+            int valeurInfY = resY*pasY;
 
             for (int j(0); j<m_vector.length(); j++)
             {
@@ -540,7 +571,7 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
                     pt2Cherche.setX(valeurInfX);
                     pt2Cherche.setY(valeurInfY);
-                    pt2Cherche.setZ(m_vector[j+4000-1].z());
+                    pt2Cherche.setZ(m_vector[j+vertices_by_x-1].z());
 
                 }
             }
