@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
 //    d.afficherDroite();
 
 
-    QVector3D p1(120,120,0);
-    QVector3D p2(240,65,0);
+    QVector3D p1(1,1,0);
+    QVector3D p2(0,0,1);
 
     //intervisibility(p1, p2);
 

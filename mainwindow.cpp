@@ -109,7 +109,7 @@ void MainWindow::chargerCoordonneesInterp()
             QString distance = QString::number(point1.distanceToPoint(point2));
 
             ui->zonePTE->clear();
-            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est: " + distance);
+            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est: " + distance + " m");
             //ui->zonePTE->appendPlainText(QString::number(point1.distanceToPoint(point2)));
             cout << "les points à interpoler sont: " << endl;
             cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
@@ -121,6 +121,7 @@ void MainWindow::chargerCoordonneesInterp()
             }
             else
             {
+                ui->zonePTE->appendPlainText("Les deux points ne sonts pas visibles");
                 cout << "Pas d'intervisibilité" << endl;
                 QMessageBox msgBox;
                 msgBox.setIcon(QMessageBox::Information);
@@ -164,6 +165,13 @@ void MainWindow::changeLimitValues()
 void MainWindow::raz() {
     //ui->nomLE->clear();
     ui->zonePTE->clear();
+    ui->x1->setValue(0);
+    ui->y1->setValue(0);
+    ui->z1->setValue(m_viewer->minCoord.z);
+    ui->x2->setValue(0);
+    ui->y2->setValue(0);
+    ui->z2->setValue(m_viewer->minCoord.z);
+    m_viewer->init();
     ui->sBar->showMessage("...Nettoyage...",2000);
 }
 
@@ -203,8 +211,6 @@ void MainWindow::read(){
         cout << "fin de la lecture" << endl;
         m_viewer->init();
         changeLimitValues();
-        QVector3D p1(120,120,10);
-        QVector3D p2(240,65,40);
 //        if (m_viewer->intervisibility(p1, p2))
 //            cout << "Intervisibilité OK" << endl;
 //        else
@@ -220,23 +226,6 @@ void MainWindow::read(){
 void MainWindow::changed(){
     ui->sBar->showMessage("modif",2000);
 }
-
-/*
-void MainWindow::write(){
-        ofstream f(nomF.toStdString().c_str());
-        QString texte;
-        if(f)
-        {
-                texte = ui->zonePTE->toPlainText();
-                string ligne;
-                ligne = texte.toStdString();
-                f << ligne << endl;
-        }
-        else{
-                ui->sBar->showMessage("Erreur à l'ouverture !");
-    }
-  }
-*/
 
 MainWindow::~MainWindow()
 {

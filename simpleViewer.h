@@ -19,6 +19,8 @@ public:
 
     void computeLineLength();
 
+    bool computeSousTerre(QVector3D pt1);
+
     qglviewer::Vec minCoord;
     qglviewer::Vec maxCoord;
 

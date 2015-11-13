@@ -88,9 +88,11 @@ void Viewer::init()
         tabColor.resize(m_vertexSort.length());
         for ( int i = 0; i<m_vertexSort.length(); ++i)
         {
-            tabColor[i].setX(0);
-            tabColor[i].setY((m_vertexSort[i].z()-minCoord.z) / (maxCoord.z -minCoord.z));
-            tabColor[i].setZ(0);
+            //tabColor[i].setX(0);
+            //tabColor[i].setY((m_vertexSort[i].z()-minCoord.z) / (maxCoord.z -minCoord.z));
+            //tabColor[i].setZ(0);
+            
+            
         }
 
         if (m_coordInterp.length() != 0)
