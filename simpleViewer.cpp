@@ -286,7 +286,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     if (computeSousTerre(pt2))
     {
-        cout << "le deuxieme point n'est pas visible" << endl;
+        cout << "le deuxieme point n'est pas sous terre" << endl;
     }
     else
     {
@@ -300,8 +300,8 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
     QVector3D vectOblique(0.5,-0.5,0);
 
     //PARCOURS DES ABSCISSES (= les droites verticales)
-    cout << "pasX: " << pasX << endl;
-    for (int i(x1); i<=x2; i+=pasX)
+    cout << "pasX: " << 25 << endl;
+    for (int i(x1); i<=x2; i+=25)
     {
         plan p(QVector3D(i, y1, 0), vectNabs);
 
@@ -357,22 +357,27 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             //cout << "toto1" << endl;
             //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
 
+            cout << altiPoint << " " << intersect.z() << endl;
             if (altiPoint > intersect.z())
+            {
+                cout << "parcours des abscisses!" << endl;
                 return false;
+            }
 //        }
 
     }
 
   //PARCOURS DES ORDONNEES (=les droites horizontales)
     cout << "Parcours des ordonnées" << endl;
-    for (int i(y1); i<=y2; i+=pasY)
+    for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectNord);
         QVector3D intersect = d.calculIntersection(p);
-        cout << y1 << " " << y2 << " " << "pasY: " << pasY << "pasX: " << pasX << endl;
+        cout << y1 << " " << y2 << " " << "pasY: " << 25 << "pasX: " << 25 << endl;
         float altiPoint = compareAlti(intersect,1);
-
+            cout << altiPoint << " " << intersect.z() << endl;
         if (altiPoint > intersect.z())
+            cout << "parcours des ordonnées!" << endl;
             return false;
 
     }
@@ -428,7 +433,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 //    }
 
     //PARCOURS DES DROITES OBLIQUES
-    for (int i(y1); i<=y2; i+=pasY)
+    for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectOblique);
 
@@ -438,8 +443,9 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
         float altiPoint = compareAlti(intersect,2);//code 2 pour les droites obliques
         //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
-
+            cout << altiPoint << " " << intersect.z() << endl;
         if (altiPoint > intersect.z())
+            cout << "parcours des droites obliques!" << endl;
             return false;
 
     }
@@ -457,8 +463,8 @@ float Viewer::compareAlti(QVector3D intersect, int code)
     //cout << "indice de l'abscisse: " << intersect.x()/25 << endl;
 
     //on récupère les deux points qui entourent le point d'intersection
-    int resY = intersect.y()/pasY;
-    int resX = intersect.x()/pasX;
+    int resY = intersect.y()/25;
+    int resX = intersect.x()/25;
 
     //switch (code)
     //{
@@ -466,8 +472,8 @@ float Viewer::compareAlti(QVector3D intersect, int code)
         if (code == 0)
         {
 
-            int valeurSup = (resY+1)*pasX;
-            int valeurInf = resY*pasY;
+            int valeurSup = (resY+1)*25;
+            int valeurInf = resY*25;
 
             for (int j(0); j<=m_vector.length(); j += vertices_by_x)
             {
@@ -504,8 +510,8 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
             cout << "ne doit pas rentrer ici!" << endl;
 
-            int valeurSup = (resX+1)*pasX;
-            int valeurInf = resX*pasY;
+            int valeurSup = (resX+1)*25;
+            int valeurInf = resX*25;
 
             for (int j(0); j<=vertices_by_x; j++)
             {
@@ -538,10 +544,10 @@ float Viewer::compareAlti(QVector3D intersect, int code)
         //case 2: {//teste les droites obliques
         else if (code == 2)
         {
-            int valeurSupX = (resX+1)*pasX;
-            int valeurInfX = resX*pasX;
-            int valeurSupY = (resY+1)*pasY;
-            int valeurInfY = resY*pasY;
+            int valeurSupX = (resX+1)*25;
+            int valeurInfX = resX*25;
+            int valeurSupY = (resY+1)*25;
+            int valeurInfY = resY*25;
 
             for (int j(0); j<m_vector.length(); j++)
             {
