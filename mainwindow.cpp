@@ -109,7 +109,7 @@ void MainWindow::chargerCoordonneesInterp()
             QString distance = QString::number(point1.distanceToPoint(point2));
 
             ui->zonePTE->clear();
-            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est: " + distance + " m");
+            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est de: " + distance + " m");
             //ui->zonePTE->appendPlainText(QString::number(point1.distanceToPoint(point2)));
             cout << "les points à interpoler sont: " << endl;
             cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
@@ -117,11 +117,11 @@ void MainWindow::chargerCoordonneesInterp()
 
             if (m_viewer->intervisibility(point1, point2))
             {    cout << "Intervisibilité OK" << endl;
-                ui->zonePTE->appendPlainText("Les deux points sonts visibles");
+                ui->zonePTE->appendPlainText("Les deux points sélectionnés sonts visibles");
             }
             else
             {
-                ui->zonePTE->appendPlainText("Les deux points ne sonts pas visibles");
+                ui->zonePTE->appendPlainText("Les deux points sélectionnés ne sonts pas visibles");
                 cout << "Pas d'intervisibilité" << endl;
                 QMessageBox msgBox;
                 msgBox.setIcon(QMessageBox::Information);

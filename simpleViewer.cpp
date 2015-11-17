@@ -297,61 +297,66 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     QVector3D vectNabs(1,0,0);
     QVector3D vectNord(0,1,0);
-    QVector3D vectOblique(0.5,-0.5,0);
+    QVector3D vectOblique(1,-1,0);
 
     //PARCOURS DES ABSCISSES (= les droites verticales)
-    cout << "pasX: " << 25 << endl;
+    //cout << "pasX: " << 25 << endl;
+
     for (int i(x1); i<=x2; i+=25)
     {
         plan p(QVector3D(i, y1, 0), vectNabs);
-        QVector3D intersect = d.calculIntersection(p);
-        float altiPoint = compareAlti(intersect,0);
-        cout << altiPoint << " " << intersect.z() << endl;
-        if (altiPoint > intersect.z())
+
+        if (d.position(p) == 2)//i.e la droite appartient au plan
         {
-            cout << "parcours des abscisses!" << endl;
-            return false;
+            //on cherche si l'altitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
+            //la droite a pour coordonnées x1
+            for (int j(y1/25); j<=y2/25; j+=vertices_by_x)
+            {
+                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
+                {
+                    cout << " Arrêt droite appartient au plan " << endl;
+                    return false;
+                }
+
+            }
+
         }
 
-//        if (d.position(p) == 2)//i.e la droite appartient au plan
-//        {
-//            //on cherche si l'altitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
-//            //la droite a pour coordonnées x1
-//            for (int j(y1/pasY); j<=y2/pasY; j+=vertices_by_x)
-//            {
-//                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
-//                {
-//                    return false;
-//                }
-//
-//            }
-//
-//
-//        }
-//
-//        //droite parallèle au plan verticaux
-//        else if(d.position(p) == 1 && ((int)pt1.x()%pasX) != 0)//si la droite est parallèle aux plans et n'est pas un plan vertical
-//        {
-//            //on bascule sur les verifications des ordonnées
-//            for (int j(y1); j<=y2; j+=pasY)
-//            {
-//                plan p(QVector3D(x1, j, 0), vectNord);
-//
-//                QVector3D intersect = d.calculIntersection(p);
-//
-//                //cout << "test2" << endl;
-//                float altiPoint = compareAlti(intersect,1);
-//
-//                //cout << "toto2" << endl;
-//                //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
-//
-//                if (altiPoint > intersect.z())
-//                    return false;
-//
-//            }
-//
-//        }
-//
+        //droite parallèle au plan verticaux
+        else if(d.position(p) == 1 && ((int)pt1.x()%25) != 0)//si la droite est parallèle aux plans et n'est pas un plan vertical
+        {
+            //on bascule sur les verifications des ordonnées
+            for (int j(y1); j<=y2; j+=25)
+            {
+                plan p(QVector3D(x1, j, 0), vectNord);
+
+                QVector3D intersect = d.calculIntersection(p);
+
+                //cout << "test2" << endl;
+                float altiPoint = compareAlti(intersect,1);
+
+                if (altiPoint > intersect.z())
+                {
+                    cout << "arrêt droite parallèle" << endl;
+                    return false;
+                }
+
+            }
+
+        }
+
+        else
+        {
+            QVector3D intersect = d.calculIntersection(p);
+            float altiPoint = compareAlti(intersect,0);
+            //cout << altiPoint << " " << intersect.z() << endl;
+            if (altiPoint > intersect.z())
+            {
+                cout << "pas de visibilité sur le parcours des abscisses!" << endl;
+                return false;
+            }
+        }
+
 //        else//droite en configuration normale
 //        {
             //on récupère les coordonnées de l'intersection de la droite et du plan
@@ -376,19 +381,24 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
     }
 
   //PARCOURS DES ORDONNEES (=les droites horizontales)
-    cout << "Parcours des ordonnées" << endl;
+    //cout << "Parcours des ordonnées" << endl;
+
     for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectNord);
         QVector3D intersect = d.calculIntersection(p);
-        cout << y1 << " " << y2 << " " << "pasY: " << 25 << "pasX: " << 25 << endl;
+        //cout << y1 << " " << y2 << " " << "pasY: " << 25 << "pasX: " << 25 << endl;
         float altiPoint = compareAlti(intersect,1);
-            cout << altiPoint << " " << intersect.z() << endl;
+        //cout << altiPoint << " " << intersect.z() << endl;
         if (altiPoint > intersect.z())
-            cout << "parcours des ordonnées!" << endl;
+        {
+            cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
             return false;
+        }
 
     }
+
+    cout << "fin du parcours des ordonnées" << endl;
 
 //        if (d.position(p) == 2)//i.e la droite appartient au plan
 //        {
@@ -441,26 +451,36 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 //    }
 
     //PARCOURS DES DROITES OBLIQUES
+    cout << "limites du plan: " << x1 << " " << x2 << " " << y1 << " " << y2 << endl;
     for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectOblique);
-
+        //cout << x1 << " " << i << endl;
+        //p.afficherPlan();
         QVector3D intersect = d.calculIntersection(p);
+        //if ((x1 <= intersect.x() <= x2) && (y1 <= intersect.y() <= y2))
+        //cout << "coordonnées de l'INTERSECTION: " << intersect.x() << " " << intersect.y() << " " << intersect.z() << endl;
+        if (x1 <= intersect.x() && intersect.x() <= x2 && y1 <= intersect.y() && intersect.y() <= y2)
+        {
+            //cout << "coordonnées de l'INTERSECTION: " << intersect.x() << " " << intersect.y() << " " << intersect.z() << endl;
+            //cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
 
-        //cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
+            float altiPoint = compareAlti(intersect,2);//code 2 pour les droites obliques
+            //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
+            //    cout << "toto " << altiPoint << " " << intersect.z() << endl;
+            if (altiPoint > intersect.z())
+            {
+                cout << "pas de visibilité sur le parcours des droites obliques!" << endl;
+                return false;
+            }
 
-        float altiPoint = compareAlti(intersect,2);//code 2 pour les droites obliques
-        //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
-            cout << altiPoint << " " << intersect.z() << endl;
-        if (altiPoint > intersect.z())
-            cout << "parcours des droites obliques!" << endl;
-            return false;
-
+        }
     }
+    cout << "fin de parcours des droites obliques" << endl;
 
 }
 
-
+//cette fonction retourne l'altitude du point de la droite correspond à l'intersection
 float Viewer::compareAlti(QVector3D intersect, int code)
 {
 
@@ -505,9 +525,9 @@ float Viewer::compareAlti(QVector3D intersect, int code)
                 }
             }
 
-            cout << "teste les droites verticales" << endl;
-            cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
-            cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
+            //cout << "teste les droites verticales" << endl;
+            //cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
+            //cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
 
             //puis on calcule les coordonnées de l'altitude du point situé sur la droite
             droite di(pt1Cherche, pt2Cherche);
@@ -522,15 +542,20 @@ float Viewer::compareAlti(QVector3D intersect, int code)
         else if (code == 1)
         {
 
-            cout << "ne doit pas rentrer ici!" << endl;
+            //cout << "ne doit pas rentrer ici!" << endl;
 
             int valeurSup = (resX+1)*25;
             int valeurInf = resX*25;
 
-            for (int j(0); j<=vertices_by_x; j++)
+            cout << intersect.y() << " " << m_vector[9503].y() << endl;
+
+            for (int j(0); j<=m_vector.length(); j++)
             {
-                if (m_vector[j].x() == valeurInf)
+                if (m_vector[j].x() == valeurInf && m_vector[j].y() == 100)
                 {
+                    //cout << "intersection: " << intersect.x() << " " << valeurSup << " indice: " << j << endl;
+                    //cout << m_vector[j].x() << " " << m_vector[j].y() << " " << m_vector[j].z() << endl;
+
                     pt1Cherche.setX(float(valeurInf));
                     pt1Cherche.setY(float(intersect.y()));
                     pt1Cherche.setZ(m_vector[j].z());
@@ -543,6 +568,7 @@ float Viewer::compareAlti(QVector3D intersect, int code)
             }
 
             //cout << "teste les droites horizontales" << endl;
+            //cout << "coordonnées de l'intersection: " << intersect.x() << " " << intersect.y() << endl;
             //cout << "le premier point cherché est: " << pt1Cherche.x() << " " << pt1Cherche.y() << " " << pt1Cherche.z() << endl;
             //cout << "le deuxieme point cherché est: " << pt2Cherche.x() << " " << pt2Cherche.y() << " " << pt2Cherche.z() << endl;
 
@@ -551,7 +577,6 @@ float Viewer::compareAlti(QVector3D intersect, int code)
             float lambdaDroite = (intersect.x() - di.b1)/di.a1;
 
             altiPoint = ((di.a3)*lambdaDroite) + di.b3;
-            //break;
 
         }
 
@@ -568,6 +593,9 @@ float Viewer::compareAlti(QVector3D intersect, int code)
                 if (m_vector[j].x() == valeurSupX && m_vector[j].y() == valeurSupY)
 
                 {
+
+                    //cout << "intersection: " << intersect.x() << " " << valeurSup << " indice: " << j << endl;
+                    //cout << m_vector[j].x() << " " << m_vector[j].y() << " " << m_vector[j].z() << endl;
 
                     pt1Cherche.setX(valeurSupX);
                     pt1Cherche.setY(valeurSupY);//on choisit le y du point en question
@@ -590,7 +618,6 @@ float Viewer::compareAlti(QVector3D intersect, int code)
             float lambdaDroite = (intersect.x() - di.b1)/di.a1;
 
             altiPoint = ((di.a3)*lambdaDroite) + di.b3;
-            //break;
 
         }
 
