@@ -187,8 +187,7 @@ void MainWindow::read(){
     {
         QTextStream in(&file);
 
-        while (!file.atEnd())
-        //for (int i(0); i<100; i++)
+        while (!in.atEnd())
         {
 
             QString line = in.readLine();
@@ -198,12 +197,10 @@ void MainWindow::read(){
             double ordonnee = coordonnees[1].toDouble();
             double altitude = coordonnees[2].toDouble();
 
-            //f>>abscisse>>ordonnee>>altitude;
 
             QVector3D point(abscisse, ordonnee, altitude);
 
             m_vect.push_back(point);
-            //ui->widget->setterNomFile(nomF.toStdString().c_str());
 
         }
 
