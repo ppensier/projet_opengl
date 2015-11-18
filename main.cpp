@@ -27,10 +27,6 @@ int main(int argc, char *argv[])
 //    cout << d.a1 << endl;
 //    d.afficherDroite();
 
-
-    QVector3D p1(1,1,0);
-    QVector3D p2(0,0,1);
-
     //intervisibility(p1, p2);
 
     QApplication a(argc, argv);

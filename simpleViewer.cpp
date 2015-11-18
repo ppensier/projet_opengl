@@ -130,7 +130,7 @@ void Viewer::computeLineLength()
 
     // at each loop, m_lineLenght takes 1 if "m_vertices[i].y == m_vertices[i+1].y".
     // m_lineLenght begin at 1.
-    for(unsigned long i = 0 ; i < m_vector.size()-1; ++i, ++vertices_by_x)
+    for(unsigned long i = 0 ; i < m_vector.size(); ++i, ++vertices_by_x)
     {
           // when "m_vertices[i].y != m_vertices[i+1].y", we compare m_lineLenght and lineLenght_prec
           // to see if they have the same number of points.
@@ -146,8 +146,8 @@ void Viewer::computeLineLength()
     }
 
     vertices_by_x = lineLength_prec;
-    cout << "la longueur d'une ligne est de : " << vertices_by_x << endl;
-    cout << "il y a : " << m_nbLines << " lignes" << endl;
+    //cout << "la longueur d'une ligne est de : " << vertices_by_x << endl;
+    //cout << "il y a : " << m_nbLines << " lignes" << endl;
 }
 
 
@@ -217,22 +217,65 @@ void Viewer::draw()
 
     if (m_coordInterp.length() != 0)
     {
-        glLineWidth(1.0);
-        glPointSize(5.0);
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glBegin(GL_LINES);
-            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
-        glEnd();
+        if (m_coordInterp.length() == 2)
+        {
+            glLineWidth(1.0);
+            glPointSize(5.0);
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glBegin(GL_LINES);
+                //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+                //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+                glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+                glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+            glEnd();
 
-        glBegin(GL_POINTS);
-            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-            glColor3f(0.0f, 0.0f, 1.0f);
-            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
-        glEnd();
+            glBegin(GL_POINTS);
+                glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+                glColor3f(0.0f, 0.0f, 1.0f);
+                glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+            glEnd();
+        }
+        else
+        {
+            glPointSize(5.0);
+            glColor3f(1.0f, 0.0f, 0.0f);
+            glBegin(GL_POINTS);
+                glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            glEnd();
+            //glBegin(GL_LINES);
+            //    //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //    //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+            //    glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            //    glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //glEnd();
 
+            glBegin(GL_LINES);
+                //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+                //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+                glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+                glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            glEnd();
+
+
+            if (intervisibility(m_coordInterp[0], m_vector[0]))
+                cout << "OK" << endl;
+
+            //for (int i(0); i<0; i++)
+            //{
+            //    if (intervisibility(m_coordInterp[0], m_vector[i]))
+            //    {
+            //        cout << "INTERVISIBILITE OK" << endl;
+            //        glBegin(GL_LINES);
+            //            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+            //            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            //            glVertex3f(m_vector[i].x(), m_vector[i].y(), m_vector[i].z());
+            //        glEnd();
+            //    }
+            //}
+
+
+        }
     }
 
 //    if (m_coordInterp.length() != 0)
@@ -260,31 +303,31 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     droite d(pt1, pt2);//on construit la droite passant par les deux points
 
-    d.afficherDroite();
+    //d.afficherDroite();
 
     calculateAxis(pt1, pt2, x1, x2, y1, y2);
 
-    cout << "les deux abscisses des deux droites sont: " << x1 << " et " << x2 << endl;
-    cout << "les deux ordonnées des deux droites sont: " << y1 << " et " << y2  << endl;
+    //cout << "les deux abscisses des deux droites sont: " << x1 << " et " << x2 << endl;
+    //cout << "les deux ordonnées des deux droites sont: " << y1 << " et " << y2  << endl;
 
     //premiere chose à faire: vérifier que les points ne sont pas sous terre
     if (computeSousTerre(pt1))
     {
-        cout << "le premier point n'est pas sous terre" << endl;
+        //cout << "le premier point n'est pas sous terre" << endl;
     }
     else
     {
-        cout << "le premier point est sous terre" << endl;
+        //cout << "le premier point est sous terre" << endl;
         return false;
     }
 
     if (computeSousTerre(pt2))
     {
-        cout << "le deuxieme point n'est pas sous terre" << endl;
+        //cout << "le deuxieme point n'est pas sous terre" << endl;
     }
     else
     {
-        cout << "le deuxieme point est sous terre" << endl;
+        //cout << "le deuxieme point est sous terre" << endl;
         return false;
     }
 
@@ -302,17 +345,17 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
         if (d.position(p) == 2)//i.e la droite appartient au plan
         {
-            cout << "la droite considérée appartient au plan!" << endl;
+            //cout << "la droite considérée appartient au plan!" << endl;
             //on cherche si l'altitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
             //la droite a pour coordonnées x1
             int indice = (i/25)+(m_vector.length()-((y1/25)+1)*vertices_by_x);
-            cout << indice << " " <<m_vector[indice].y() << " " << y1 << endl;
+            //cout << indice << " " <<m_vector[indice].y() << " " << y1 << endl;
             while (m_vector[indice].y() >= y1)
             {
                 //cout << "indice: " << indice << " altitude: " << m_vector[indice].z() << endl;
                 if (m_vector[indice].z() > pt1.z() || m_vector[indice].z() > pt2.z())
                 {
-                    cout << " Arrêt droite appartient au plan " << m_vector[indice].y() << endl;
+                    //cout << " Arrêt droite appartient au plan " << m_vector[indice].y() << endl;
                     return false;
                 }
                 indice-=vertices_by_x;
@@ -323,7 +366,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         //droite parallèle au plan verticaux
         else if(d.position(p) == 1 && ((int)pt1.x()%25) != 0)//si la droite est parallèle aux plans et n'est pas un plan vertical
         {
-            cout << "la droite considérée est parallèle au plan " << y1 << " " << y2 << endl;
+            //cout << "la droite considérée est parallèle au plan " << y1 << " " << y2 << endl;
             //on bascule sur les verifications des ordonnées
             d.afficherDroite();
             for (int i(y1); i<=y2; i+=25)
@@ -338,7 +381,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
                 //cout << intersect.y() << " " << altiPoint << " " << intersect.z() << endl;
                 if (altiPoint > intersect.z())
                 {
-                    cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
+                    //cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
                     return false;
                 }
             }
@@ -352,13 +395,13 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             //cout <<  "ALTI: " << altiPoint << " " << intersect.z() << endl;
             if (altiPoint > intersect.z())
             {
-                cout << "pas de visibilité sur le parcours des abscisses!" << endl;
+                //cout << "pas de visibilité sur le parcours des abscisses!" << endl;
                 return false;
             }
         }
 
     }
-    cout << "Fin de parcours des abscisses" << endl;
+    //cout << "Fin de parcours des abscisses" << endl;
 
   //PARCOURS DES ORDONNEES (=les droites horizontales)
     //cout << "Parcours des ordonnées" << endl;
@@ -371,7 +414,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         //cout << altiPoint << " " << intersect.z() << endl;
         if (altiPoint > intersect.z())
         {
-            cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
+            //cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
             return false;
         }
 
@@ -390,7 +433,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         //}
 
     }
-    cout << "fin du parcours des ordonnées" << endl;
+    //cout << "fin du parcours des ordonnées" << endl;
 
 
 
@@ -433,7 +476,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
     //PARCOURS DES DROITES OBLIQUES
     //cout << "limites du plan: " << x1 << " " << x2 << " " << y1 << " " << y2 << endl;
-    /*
+
     for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectOblique);
@@ -452,13 +495,13 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             //    cout << "toto " << altiPoint << " " << intersect.z() << endl;
             if (altiPoint > intersect.z())
             {
-                cout << "pas de visibilité sur le parcours des droites obliques!" << endl;
+                //cout << "pas de visibilité sur le parcours des droites obliques!" << endl;
                 return false;
             }
         }
     }
-    cout << "fin de parcours des droites obliques" << endl;
-*/
+    //cout << "fin de parcours des droites obliques" << endl;
+
 }
 
 //cette fonction retourne l'altitude du point de la droite correspond à l'intersection
@@ -668,19 +711,19 @@ bool Viewer::computeSousTerre(QVector3D pt1)
     if (distance1 < distance2)
     {
         plan p(pt1Cherche, pt2Cherche, pt3Cherche);
-        p.afficherPlan();
+        //p.afficherPlan();
         alti = (-(p.a*pt1.x())-(p.b*pt1.y())-p.d)/p.c;
-        cout << alti << endl;
+        //cout << alti << endl;
     }
     else
     {
         plan p(pt4Cherche, pt2Cherche, pt3Cherche);
-        p.afficherPlan();
+        //p.afficherPlan();
         alti = (-(p.a*pt1.x())-(p.b*pt1.y())-p.d)/p.c;
-        cout << alti << endl;
+        //cout << alti << endl;
     }
 
-    cout << "DIFFERENCE: " << alti << " " << pt1.z() << endl;
+    //cout << "DIFFERENCE: " << alti << " " << pt1.z() << endl;
 
     if (pt1.z()>alti)//le point est au dessus de la surface
         return true;

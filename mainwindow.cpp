@@ -58,12 +58,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // On ferme l'application
     QObject::connect(ui->quitB,SIGNAL(released()),this,SLOT(close()));
 
-    // On nettoie les autres objets
-    //QObject::connect(ui->razB,SIGNAL(released()),this,SLOT(raz()));
-
-    // On navigue dans l'arborescence des fichiers
-    //QObject::connect(ui->openFileB,SIGNAL(released()),this,SLOT(changeNom()));
-
     // On lit le fichier
     //QObject::connect(ui->choiceB,SIGNAL(released()),this,SLOT(read()));
 
@@ -90,39 +84,73 @@ void MainWindow::chargerCoordonneesInterp()
 {
     if (m_vect.length() != 0)
     {
-        cout << ui->x1->value() << " " << m_viewer->minCoord.x << endl;
 
-        if(ui->x1->value() == m_viewer->minCoord.x || ui->x1->value() == m_viewer->maxCoord.x || ui->y1->value() == m_viewer->minCoord.y || ui->y1->value() == m_viewer->maxCoord.y || ui->x2->value() == m_viewer->minCoord.x || ui->x2->value() == m_viewer->maxCoord.x || ui->y2->value() == m_viewer->minCoord.y || ui->y2->value() == m_viewer->maxCoord.y  )
+        if (ui->nb2->isChecked() && !(ui->nb1->isChecked()))
         {
-            cout << "Je rentre dans la condition" << endl;
-            QMessageBox::warning(this, "Titre de la fenêtre", "Attention vous n'êtes pas dans le bon interval de valeurs!");
 
+            if(ui->x1->value() == m_viewer->minCoord.x || ui->x1->value() == m_viewer->maxCoord.x || ui->y1->value() == m_viewer->minCoord.y || ui->y1->value() == m_viewer->maxCoord.y || ui->x2->value() == m_viewer->minCoord.x || ui->x2->value() == m_viewer->maxCoord.x || ui->y2->value() == m_viewer->minCoord.y || ui->y2->value() == m_viewer->maxCoord.y  )
+            {
+                //cout << "Je rentre dans la condition" << endl;
+                QMessageBox::warning(this, "Titre de la fenêtre", "Attention vous n'êtes pas dans le bon interval de valeurs!");
+
+            }
+            else
+            {
+                QVector3D point1(ui->x1->value(), ui->y1->value(), ui->z1->value());
+                QVector3D point2(ui->x2->value(), ui->y2->value(), ui->z2->value());
+
+                coordAinterp.append(point1);
+                coordAinterp.append(point2);
+
+                //interpolation(coordAinterp);//Interpolation des coordonnées choisies
+                QString distance = QString::number(point1.distanceToPoint(point2));
+
+                ui->zonePTE->clear();
+                ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est de: " + distance + " m");
+                //ui->zonePTE->appendPlainText(QString::number(point1.distanceToPoint(point2)));
+                //cout << "les points à interpoler sont: " << endl;
+                //cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
+                m_viewer->draw();
+
+                if (m_viewer->intervisibility(point1, point2))
+                {
+                    //cout << "Intervisibilité OK" << endl;
+                    ui->zonePTE->appendPlainText("Les deux points sélectionnés sont visibles");
+                }
+                else
+                {
+                    ui->zonePTE->appendPlainText("Les deux points sélectionnés ne sont pas visibles");
+                    //cout << "Pas d'intervisibilité" << endl;
+                    QMessageBox msgBox;
+                    msgBox.setIcon(QMessageBox::Information);
+                    msgBox.setWindowTitle("");
+                    msgBox.setText("Pas d'intervisibilité entre les deux points!");
+                    msgBox.exec();
+                }
+            }
+        }
+        else if (!(ui->nb1->isChecked()) && !(ui->nb2->isChecked()))
+        {
+            QMessageBox::warning(this, "Titre de la fenêtre", "Choisissez le nombre de points pour réaliser le calcul d'intervisibilité!");
+        }
+        else if (ui->nb1->isChecked() && ui->nb2->isChecked())
+        {
+            QMessageBox::warning(this, "Titre de la fenêtre", "Cochez une seule case!");
         }
         else
         {
             QVector3D point1(ui->x1->value(), ui->y1->value(), ui->z1->value());
-            QVector3D point2(ui->x2->value(), ui->y2->value(), ui->z2->value());
-
             coordAinterp.append(point1);
-            coordAinterp.append(point2);
-
-            //interpolation(coordAinterp);//Interpolation des coordonnées choisies
-            QString distance = QString::number(point1.distanceToPoint(point2));
-
             ui->zonePTE->clear();
-            ui->zonePTE->appendPlainText("la distance entre les deux points interpolés est de: " + distance + " m");
-            //ui->zonePTE->appendPlainText(QString::number(point1.distanceToPoint(point2)));
-            cout << "les points à interpoler sont: " << endl;
-            cout << coordAinterp[0].x() << " " << coordAinterp[0].y() << " " << coordAinterp[1].x() << " " << coordAinterp[1].y() << endl;
             m_viewer->draw();
-
-            if (m_viewer->intervisibility(point1, point2))
-            {    cout << "Intervisibilité OK" << endl;
-                ui->zonePTE->appendPlainText("Les deux points sélectionnés sonts visibles");
+/*
+            if (m_viewer->intervisibility(point1, m_vect[0]))
+            {
+                ui->zonePTE->appendPlainText("Les deux points sélectionnés sont visibles");
             }
             else
             {
-                ui->zonePTE->appendPlainText("Les deux points sélectionnés ne sonts pas visibles");
+                ui->zonePTE->appendœPlainText("Les deux points sélectionnés ne sont pas visibles");
                 cout << "Pas d'intervisibilité" << endl;
                 QMessageBox msgBox;
                 msgBox.setIcon(QMessageBox::Information);
@@ -130,10 +158,10 @@ void MainWindow::chargerCoordonneesInterp()
                 msgBox.setText("Pas d'intervisibilité entre les deux points!");
                 msgBox.exec();
             }
+*/
+
         }
 
-        //cout << ui->y1->value() << endl;
-        //cout << "abscisse du point 1: " << coordAinterp1.x() << " ordonnée du point 1: " << coordAinterp1.y() << endl;
     }
     else
     {
@@ -143,7 +171,7 @@ void MainWindow::chargerCoordonneesInterp()
 
 void MainWindow::changeLimitValues()
 {
-    cout << "1er appel pour changer les coordonnées des limites" << endl;
+    //cout << "1er appel pour changer les coordonnées des limites" << endl;
     //si le MNT est chargé on change les valeurs limites des spinbox
     if (m_vect.length() != 0)
     {
@@ -206,7 +234,7 @@ void MainWindow::read(){
         }
 
         file.close();
-        cout << "fin de la lecture" << endl;
+        //cout << "fin de la lecture" << endl;
         m_viewer->init();
         changeLimitValues();
 //        if (m_viewer->intervisibility(p1, p2))
