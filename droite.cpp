@@ -92,7 +92,7 @@ void calculateAxis(QVector3D pt1, QVector3D pt2, double &x1, double &x2, double 
     if (pt1.y() < pt2.y())
     {
         y1 = (resy1+1)*pasY;
-        y2 = resx2*pasY;
+        y2 = resy2*pasY;
     }
     else
     {

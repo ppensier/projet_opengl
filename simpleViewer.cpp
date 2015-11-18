@@ -52,7 +52,6 @@ void Viewer::init()
                 maxCoord.z = m_vector[i].z();
             if (m_vector[i].z() < minCoord.z)
                 minCoord.z = m_vector[i].z();
-
         }
 
         //on trie les points
@@ -176,12 +175,6 @@ void Viewer::draw()
 
 //    glEnd();
 
-//    glBegin(GL_POINT);
-//    glPointSize(50);
-//    glColor3f(1.0f, 0.0f , 0.0f);
-//        glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
-//    glEnd();
-
     glClear(GL_COLOR_BUFFER_BIT); // clear screen
     //glLineWidth(1);
 
@@ -224,20 +217,21 @@ void Viewer::draw()
 
     if (m_coordInterp.length() != 0)
     {
-    glLineWidth(1.0);
-    glPointSize(5.0);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_LINES);
-        //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-        //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-        glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-        glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
-    glEnd();
+        glLineWidth(1.0);
+        glPointSize(5.0);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glBegin(GL_LINES);
+            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+        glEnd();
 
-    glBegin(GL_POINTS);
-        glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-        glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
-    glEnd();
+        glBegin(GL_POINTS);
+            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            glColor3f(0.0f, 0.0f, 1.0f);
+            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
+        glEnd();
 
     }
 
@@ -308,48 +302,54 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 
         if (d.position(p) == 2)//i.e la droite appartient au plan
         {
+            cout << "la droite considérée appartient au plan!" << endl;
             //on cherche si l'altitude d'un point sur la droite est supérieure à l'altitude d'un des deux points
             //la droite a pour coordonnées x1
-            for (int j(y1/25); j<=y2/25; j+=vertices_by_x)
+            int indice = (i/25)+(m_vector.length()-((y1/25)+1)*vertices_by_x);
+            cout << indice << " " <<m_vector[indice].y() << " " << y1 << endl;
+            while (m_vector[indice].y() >= y1)
             {
-                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
+                //cout << "indice: " << indice << " altitude: " << m_vector[indice].z() << endl;
+                if (m_vector[indice].z() > pt1.z() || m_vector[indice].z() > pt2.z())
                 {
-                    cout << " Arrêt droite appartient au plan " << endl;
+                    cout << " Arrêt droite appartient au plan " << m_vector[indice].y() << endl;
                     return false;
                 }
-
+                indice-=vertices_by_x;
             }
-
+            break;
         }
 
         //droite parallèle au plan verticaux
         else if(d.position(p) == 1 && ((int)pt1.x()%25) != 0)//si la droite est parallèle aux plans et n'est pas un plan vertical
         {
+            cout << "la droite considérée est parallèle au plan " << y1 << " " << y2 << endl;
             //on bascule sur les verifications des ordonnées
-            for (int j(y1); j<=y2; j+=25)
+            d.afficherDroite();
+            for (int i(y1); i<=y2; i+=25)
             {
-                plan p(QVector3D(x1, j, 0), vectNord);
-
+                plan p(QVector3D(x1, i, 0), vectNord);
+                //p.afficherPlan();
                 QVector3D intersect = d.calculIntersection(p);
-
-                //cout << "test2" << endl;
+                //cout << "INTERSECTION: " << " " << intersect.x() << " " << intersect.y() << " " << intersect.z() << endl;
+                //cout << y1 << " " << y2 << " " << "pasY: " << 25 << "pasX: " << 25 << endl;
                 float altiPoint = compareAlti(intersect,1);
-
+                //cout << altiPoint << endl;
+                //cout << intersect.y() << " " << altiPoint << " " << intersect.z() << endl;
                 if (altiPoint > intersect.z())
                 {
-                    cout << "arrêt droite parallèle" << endl;
+                    cout << "pas de visibilité sur le parcours des ordonnées!" << endl;
                     return false;
                 }
-
             }
-
+            break;
         }
 
         else
         {
             QVector3D intersect = d.calculIntersection(p);
             float altiPoint = compareAlti(intersect,0);
-            //cout << altiPoint << " " << intersect.z() << endl;
+            //cout <<  "ALTI: " << altiPoint << " " << intersect.z() << endl;
             if (altiPoint > intersect.z())
             {
                 cout << "pas de visibilité sur le parcours des abscisses!" << endl;
@@ -357,35 +357,14 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             }
         }
 
-//        else//droite en configuration normale
-//        {
-            //on récupère les coordonnées de l'intersection de la droite et du plan
-            //QVector3D intersect = d.calculIntersection(p);
-
-            //cout << "les coordonnées de l'intersection sont: " << intersect.x() << " et " << intersect.y() << endl;
-
-            //cout << "test1" << endl;
-            //float altiPoint = compareAlti(intersect,0);
-
-            //cout << "toto1" << endl;
-            //cout << "l'altitude du point d'intersection est: " << altiPoint << " " << intersect.z() << endl;
-
-            //cout << altiPoint << " " << intersect.z() << endl;
-            //if (altiPoint > intersect.z())
-            //{
-            //    cout << "parcours des abscisses!" << endl;
-            //    return false;
-            //}
-//        }
-
     }
+    cout << "Fin de parcours des abscisses" << endl;
 
   //PARCOURS DES ORDONNEES (=les droites horizontales)
     //cout << "Parcours des ordonnées" << endl;
-
     for (int i(y1); i<=y2; i+=25)
     {
-        plan p(QVector3D(x1, i, 0), vectNord);
+        plan p(QVector3D(x1, i, 0), vectNord);      
         QVector3D intersect = d.calculIntersection(p);
         //cout << y1 << " " << y2 << " " << "pasY: " << 25 << "pasX: " << 25 << endl;
         float altiPoint = compareAlti(intersect,1);
@@ -396,22 +375,24 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
             return false;
         }
 
-    }
+        //if (d.position(p) == 2)//i.e la droite appartient au plan
+        //{
+        //    cout << "la droite considérée appartient au plan!" << endl;
+        //    for (int j(x1/pasX); j<=x2/pasX; j++)
+        //    {
+        //        if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
+        //        {
+        //            return false;
+        //        }
+        //
+        //    }
+        //
+        //}
 
+    }
     cout << "fin du parcours des ordonnées" << endl;
 
-//        if (d.position(p) == 2)//i.e la droite appartient au plan
-//        {
-//            for (int j(x1/pasX); j<=x2/pasX; j++)
-//            {
-//                if (m_vector[j].z() > pt1.z() || m_vector[j].z() > pt2.z())
-//                {
-//                    return false;
-//                }
-//
-//            }
-//
-//        }
+
 
 //        else if (d.position(p) == 1 && ((int)pt1.y()%pasY) != 0)//si la droite est parallèle et n'est pas un multiple de 25
 //        {
@@ -451,7 +432,8 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 //    }
 
     //PARCOURS DES DROITES OBLIQUES
-    cout << "limites du plan: " << x1 << " " << x2 << " " << y1 << " " << y2 << endl;
+    //cout << "limites du plan: " << x1 << " " << x2 << " " << y1 << " " << y2 << endl;
+    /*
     for (int i(y1); i<=y2; i+=25)
     {
         plan p(QVector3D(x1, i, 0), vectOblique);
@@ -473,11 +455,10 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
                 cout << "pas de visibilité sur le parcours des droites obliques!" << endl;
                 return false;
             }
-
         }
     }
     cout << "fin de parcours des droites obliques" << endl;
-
+*/
 }
 
 //cette fonction retourne l'altitude du point de la droite correspond à l'intersection
@@ -544,23 +525,25 @@ float Viewer::compareAlti(QVector3D intersect, int code)
 
             //cout << "ne doit pas rentrer ici!" << endl;
 
-            int valeurSup = (resX+1)*25;
-            int valeurInf = resX*25;
+            int valeurSupX = (resX+1)*25;
+            int valeurInfX = resX*25;
+            //int valeurSupY = (resY+1)*25;
+            //int valeurInfY = resY*25;
 
-            cout << intersect.y() << " " << m_vector[9503].y() << endl;
+            //cout << intersect.y() << " " << m_vector[9503].y() << endl;
 
             for (int j(0); j<=m_vector.length(); j++)
             {
-                if (m_vector[j].x() == valeurInf && m_vector[j].y() == 100)
+                if (m_vector[j].x() == valeurInfX && m_vector[j].y() == intersect.y())
                 {
                     //cout << "intersection: " << intersect.x() << " " << valeurSup << " indice: " << j << endl;
                     //cout << m_vector[j].x() << " " << m_vector[j].y() << " " << m_vector[j].z() << endl;
 
-                    pt1Cherche.setX(float(valeurInf));
+                    pt1Cherche.setX(float(valeurInfX));
                     pt1Cherche.setY(float(intersect.y()));
                     pt1Cherche.setZ(m_vector[j].z());
 
-                    pt2Cherche.setX(float(valeurSup));
+                    pt2Cherche.setX(float(valeurSupX));
                     pt2Cherche.setY(float(intersect.y()));
                     pt2Cherche.setZ(m_vector[j+1].z());
                     break;

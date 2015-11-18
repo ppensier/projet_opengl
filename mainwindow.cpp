@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Initialisation du paramètre m_vect
 
+    ui->nb2->setChecked(true);
     m_viewer = new Viewer(m_vect, coordAinterp, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
@@ -74,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->envoyerCoord, SIGNAL(clicked()), this, SLOT(chargerCoordonneesInterp()));
 
+    QObject::connect(ui->actionLancer_le_calcul, SIGNAL(triggered()), qApp, SLOT(chargerCoordonneesInterp()));
+
     QObject::connect(ui->x1, SIGNAL(valueChanged(int)),this, SLOT(setValue(int)));
 
     /*
@@ -87,8 +90,6 @@ void MainWindow::chargerCoordonneesInterp()
 {
     if (m_vect.length() != 0)
     {
-
-        cout << "on rentre dans la condition!" << endl;
         cout << ui->x1->value() << " " << m_viewer->minCoord.x << endl;
 
         if(ui->x1->value() == m_viewer->minCoord.x || ui->x1->value() == m_viewer->maxCoord.x || ui->y1->value() == m_viewer->minCoord.y || ui->y1->value() == m_viewer->maxCoord.y || ui->x2->value() == m_viewer->minCoord.x || ui->x2->value() == m_viewer->maxCoord.x || ui->y2->value() == m_viewer->minCoord.y || ui->y2->value() == m_viewer->maxCoord.y  )
