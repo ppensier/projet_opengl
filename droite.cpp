@@ -18,8 +18,6 @@ droite::droite(QVector3D pt1, QVector3D pt2)
     b2 = pt1.y();
     b3 = pt1.z();
 
-    cout << pt1.x() << " " << pt2.x() << " " << a1 << endl;
-
 }
 
 void droite::afficherDroite()

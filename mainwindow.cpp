@@ -23,7 +23,7 @@ const int taille_fichier = 100;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-{  
+{
 
     ui->setupUi(this);
 
@@ -35,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Initialisation du paramètre m_vect
 
     ui->nb2->setChecked(true);
-    m_viewer = new Viewer(m_vect, coordAinterp, this);
+    distMax= 0;
+    m_viewer = new Viewer(m_vect, coordAinterp, distMax, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
     //Ajout d'information aux spinbox
@@ -139,6 +140,7 @@ void MainWindow::chargerCoordonneesInterp()
         }
         else
         {
+            distMax = ui->dist_max->value();
             QVector3D point1(ui->x1->value(), ui->y1->value(), ui->z1->value());
             coordAinterp.append(point1);
             ui->zonePTE->clear();

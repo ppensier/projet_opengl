@@ -8,8 +8,8 @@
 using namespace std;
 using namespace qglviewer;
 
-Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), tabColor(m_vector.length())
+Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, QWidget *parent) :
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length())
 {
 
 }
@@ -66,13 +66,16 @@ void Viewer::init()
 
             if ((i+1)%vertices_by_x == vertices_by_x-1 && (i+1) != m_vector.length()-vertices_by_x) //i+1 est au bout de la ligne
             {
-                //cout << ligne << endl;
-                //cout << "vous êtes à la ligne: " << ligne << endl;
                 for (int j = i+1+vertices_by_x; j > i + 1; j--)
                 {
-                    m_vertexSort.push_back(m_vector[j]);
+                    if ((j-1)!=(i+1))
+                    {
+                        m_vertexSort.push_back(m_vector[j]);
+                        m_vertexSort.push_back(m_vector[j-vertices_by_x]);
+                        m_vertexSort.push_back(m_vector[j-1]);
+                    }
                 }
-                i++;
+                i++;//on passe à ligne suivante
             }
 
             //deuxième triangle
@@ -108,11 +111,9 @@ void Viewer::init()
         //cout << "max en x: " << maxCoord.x << endl;
 
         setSceneBoundingBox(minCoord, maxCoord);
-        showEntireScene();      
+        showEntireScene();
 
         const qglviewer::Camera* const camera = this->camera();
-
-        const Vec vectPos(0,0,0);
 
         //if (m_coordInterp.length() != 0)
             //camera->setPosition(m_coordInterp[0]);
@@ -154,18 +155,8 @@ void Viewer::computeLineLength()
 void Viewer::draw()
 {
 
-  drawAxis();
-//  glLineWidth(100.0);
-//  glBegin(GL_LINES);
-//      glColor3f(1.0f, 0.0f, 0.0f);
-//      glVertex3f(0,0,0);
-//      glVertex3f(1,1,1);
-//  glEnd();
-
   if (m_vector.length() != 0)
   {
-
-      drawAxis();
 
 //    glColor3f(1.0f, 0.0f , 0.0f);
 //    glLineWidth(50.0);
@@ -211,7 +202,7 @@ void Viewer::draw()
     glEnableClientState (GL_COLOR_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
         glColorPointer(3, GL_FLOAT, 0, tabColor.constData());
-        glDrawArrays(GL_LINE_STRIP, 0, m_vertexSort.size());//dessine les primitives
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, m_vertexSort.size());//dessine les primitives
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 
@@ -238,7 +229,7 @@ void Viewer::draw()
         else
         {
             glPointSize(5.0);
-            glColor3f(1.0f, 0.0f, 0.0f);
+            glColor3f(0.0f, 0.0f, 1.0f);
             glBegin(GL_POINTS);
                 glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
             glEnd();
@@ -249,31 +240,59 @@ void Viewer::draw()
             //    glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
             //glEnd();
 
-            glBegin(GL_LINES);
-                //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-                //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-                glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-                glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            glEnd();
+            //glBegin(GL_LINES);
+            //    //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //    //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+            //    glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+            //    glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+            //glEnd();
 
 
-            if (intervisibility(m_coordInterp[0], m_vector[0]))
-                cout << "OK" << endl;
+            //if (intervisibility(m_coordInterp[0], m_vector[0]))
+            //    cout << "OK" << endl;
 
-            //for (int i(0); i<0; i++)
-            //{
-            //    if (intervisibility(m_coordInterp[0], m_vector[i]))
-            //    {
-            //        cout << "INTERVISIBILITE OK" << endl;
-            //        glBegin(GL_LINES);
-            //            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-            //            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-            //            glVertex3f(m_vector[i].x(), m_vector[i].y(), m_vector[i].z());
-            //        glEnd();
-            //    }
-            //}
+            //on récupère seulement les sommets situés les plus proches
+            QVector<QVector3D> m_vect1;
+            for (int i(0); i<m_vector.length(); i++)
+            {
+                float distance = m_coordInterp[0].distanceToPoint(m_vector[i]);
+                if (distance <= distanceTir)
+                {
+                    m_vect1.append(m_vector[i]);
+                }
+            }
 
+            //m_vect1.moveToThread(&m_tabThread1);
+            //connect(this, SIGNAL(beginThread()), m_vect1, SLOT(computeIntervisility));
+
+            // Start thread
+            //m_tabThread1.start();
+            //emit beginThread();
+
+            for (int i(0); i<m_vect1.length(); i++)
+            {
+                float distance = m_coordInterp[0].distanceToPoint(m_vect1[i]);
+                if (distance <= distanceTir)
+                {
+                    //cout << "COORDONNEES: " << m_vector[i].x() << " " << m_vector[i].y() << " " << m_vector[i].z() << endl;
+                    if (intervisibility(m_coordInterp[0], m_vect1[i]))
+                    {
+                        //cout << "INTERVISIBILITE OK" << endl;
+                        glColor3f(1.0f, 0.0f, 0.0f);
+                        glBegin(GL_LINES);
+                            glLineWidth(0.01);
+                            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
+                            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
+                            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+                            glVertex3f(m_vect1[i].x(), m_vect1[i].y(), m_vect1[i].z());
+                        glEnd();
+                    }
+                    else
+                    {
+                        //cout << "Pas d'intervisibilité!" << endl;
+                    }
+                }
+            }
 
         }
     }
@@ -331,6 +350,7 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
         return false;
     }
 
+    //cout << "fin du calcul sous terre" << endl;
 
     QVector3D vectNabs(1,0,0);
     QVector3D vectNord(0,1,0);
@@ -701,31 +721,45 @@ bool Viewer::computeSousTerre(QVector3D pt1)
     //cout << "le troisieme cherché est: " << pt3Cherche.x() << " " << pt3Cherche.y() << " " << pt3Cherche.z() << endl;
     //cout << "le quatrieme cherché est: " << pt4Cherche.x() << " " << pt4Cherche.y() << " " << pt4Cherche.z() << endl;
 
-    //float distance[4] = {pt1.distanceToPoint(pt1Cherche), pt1.distanceToPoint(pt2Cherche), pt1.distanceToPoint(pt3Cherche), pt1.distanceToPoint(pt4Cherche)};
-
     float distance1 = pt1.distanceToPoint(pt1Cherche);
     float distance2 = pt1.distanceToPoint(pt4Cherche);
 
-    double alti;
+    float alti;
 
     if (distance1 < distance2)
     {
         plan p(pt1Cherche, pt2Cherche, pt3Cherche);
-        //p.afficherPlan();
         alti = (-(p.a*pt1.x())-(p.b*pt1.y())-p.d)/p.c;
-        //cout << alti << endl;
     }
     else
     {
         plan p(pt4Cherche, pt2Cherche, pt3Cherche);
-        //p.afficherPlan();
         alti = (-(p.a*pt1.x())-(p.b*pt1.y())-p.d)/p.c;
-        //cout << alti << endl;
     }
+/*
+    cout << "DIFFERENCE: " << alti << " " << pt1.z() << endl;
 
-    //cout << "DIFFERENCE: " << alti << " " << pt1.z() << endl;
+    if (alti == pt1.z())
+    {
+        cout << "EGALITE OK!" << endl;
+    }
+    else if (alti > pt1.z())
+    {
+        cout << "inferieur" << endl;
+    }
+    else
+    {
+        cout << "superieur " << endl;
+    }
+    if (pt1.z() == 1099.5)
+        cout << "EGAL POINT " << alti << endl;
+    if (float(alti) == 1099.5)
+        cout << "EGAL MNT" << endl;
 
-    if (pt1.z()>alti)//le point est au dessus de la surface
+    //if (float(1099.5)>=float(1099.5))
+    //    cout << "EGAL" << endl;
+*/
+    if (float(pt1.z())>=float(alti))//le point est au dessus de la surface
         return true;
     else
         return false;

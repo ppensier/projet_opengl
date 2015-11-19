@@ -23,7 +23,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Choissez le nombre de points: </string>
+         <string>nombre de points: </string>
         </property>
        </widget>
       </item>
@@ -42,17 +42,18 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QLabel" name="label_dist">
+        <property name="text">
+         <string>choisir une distance de tir:</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="dist_max">
+        <property name="maximum">
+         <double>10000.000000000000000</double>
         </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>
@@ -214,7 +215,7 @@
     <property name="title">
      <string>Affichage</string>
     </property>
-    <addaction name="actionChoisir_le_s_point_s"/>
+    <addaction name="actionChoisir_les_point_s"/>
     <addaction name="actionLancer_le_calcul"/>
    </widget>
    <addaction name="menuIntervisibilitySoft"/>
@@ -237,7 +238,7 @@
     <string>RAZ</string>
    </property>
   </action>
-  <action name="actionChoisir_le_s_point_s">
+  <action name="actionChoisir_les_point_s">
    <property name="text">
     <string>Choisir le(s) point(s)</string>
    </property>
