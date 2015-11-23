@@ -3,8 +3,6 @@
 
 #include "simpleViewer.h"
 
-class Viewer;
-
 class MiniTab : public Viewer
 {
     Q_OBJECT

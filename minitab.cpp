@@ -2,12 +2,12 @@
 #include "simpleViewer.h"
 
 using namespace std;
-
+/*
 MiniTab::MiniTab()
 {
 
 }
-
+*/
 
 MiniTab::MiniTab(QVector<QVector3D>& vector) :
 Viewer(m_vector, m_coordInterp, distanceTir, vertices_by_x)

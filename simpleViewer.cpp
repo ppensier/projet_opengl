@@ -2,14 +2,16 @@
 #include "droite.h"
 
 #include "simpleViewer.h"
+#include "minitab.h"
 
 #include <iostream>
 
 using namespace std;
 using namespace qglviewer;
 
+
 Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, int vertices_by_x, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length()), vertices_by_x(0), m_thread1(), m_thread2(), m_thread3(),m_thread4()//, tab1(), tab2(), tab3(), tab4()
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length()), vertices_by_x(0), m_thread1(), m_thread2(), m_thread3(),m_thread4(), tab1(), tab2(), tab3(), tab4()
 {
 
 }
@@ -108,7 +110,7 @@ void Viewer::init()
                 tableau4.append(m_vector[i]);
             }
         }
-/*
+
         tab1 = new MiniTab(tableau1);
         tab2 = new MiniTab(tableau2);
         tab3 = new MiniTab(tableau3);
@@ -136,7 +138,7 @@ void Viewer::init()
         m_thread4.start();
         emit beginThread4();
         //fins des threads
-*/
+
         //tableau de couleurs
         tabColor.clear();
         tabColor.resize(m_vertexSort.length());

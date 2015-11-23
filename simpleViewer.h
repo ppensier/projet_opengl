@@ -8,11 +8,17 @@
 #include <QThread>
 #include <QGLViewer/qglviewer.h>
 
+//#include "minitab.h"
+
+class Minitab;
+
 class Viewer : public QGLViewer
 {
 public:
+    Viewer();
     //explicit Viewer(const QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent = 0);
-    explicit Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, QWidget *parent = 0);
+    explicit Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, int vertices_by_x, QWidget *parent = 0);
+    ~Viewer();
     virtual void init();
     virtual void draw();
 
@@ -41,14 +47,22 @@ protected:
     int pasX;
     int pasY;
 
+    Minitab* tab1;
+    Minitab* tab2;
+    Minitab* tab3;
+    Minitab* tab4;
+
 private:
-    QThread m_tabThread1;
-    //QThread m_tabThread2;
-    //QThread m_tabThread3;
-    //QThread m_tabThread4;
+    QThread m_thread1;
+    QThread m_thread2;
+    QThread m_thread3;
+    QThread m_thread4;
 
 signals:
-    void beginThread();
+    void beginThread1();
+    void beginThread2();
+    void beginThread3();
+    void beginThread4();
 
 };
 

@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->nb2->setChecked(true);
     distMax= 0;
-    m_viewer = new Viewer(m_vect, coordAinterp, distMax, this);
+    m_viewer = new Viewer(m_vect, coordAinterp, distMax, 0, this);
     ui->verticalLayout_3->addWidget(m_viewer);
 
     //Ajout d'information aux spinbox
