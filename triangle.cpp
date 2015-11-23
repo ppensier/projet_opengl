@@ -1,3 +1,4 @@
+/*
 #include "triangle.h"
 
 triangle::triangle()
@@ -24,3 +25,4 @@ float triangle::perimetre() {
     return resultat;
 }
 
+*/

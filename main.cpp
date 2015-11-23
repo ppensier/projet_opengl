@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 //#include "myglwidget.h"
-#include "points.h"
 #include "triangle.h"
 #include <QApplication>
 

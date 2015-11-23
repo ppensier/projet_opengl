@@ -1,7 +1,6 @@
+/*
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
-
-#include "points.h"
 
 class triangle
 {
@@ -18,3 +17,4 @@ private:
 };
 
 #endif // TRIANGLE_H
+*/

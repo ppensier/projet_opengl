@@ -8,8 +8,8 @@
 using namespace std;
 using namespace qglviewer;
 
-Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length()), m_tabThread1()
+Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, int vertices_by_x, QWidget *parent) :
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length()), vertices_by_x(0), m_thread1(), m_thread2(), m_thread3(),m_thread4()//, tab1(), tab2(), tab3(), tab4()
 {
 
 }
@@ -80,24 +80,63 @@ void Viewer::init()
         }
 
         //on ajoute les points à la bonne distance et visibles
-        cout << "entree1" << endl;
+        cout << "entree thread" << endl;
+
+        //initialisation des 4 mini-tableaux
+        QVector<QVector3D> tableau1;
+        QVector<QVector3D> tableau2;
+        QVector<QVector3D> tableau3;
+        QVector<QVector3D> tableau4;
+
+        //création de 4 petits tableaux
+        for (int i=0; i<m_vector.length(); i++)
+        {
+            if (i<m_vector.length()/4)
+            {
+                tableau1.append(m_vector[i]);
+            }
+            else if (i<m_vector.length()/2 && i>m_vector.length()/4)
+            {
+                tableau2.append(m_vector[i]);
+            }
+            else if (i>m_vector.length()/2 && i<(3/4)*m_vector.length())
+            {
+                tableau3.append(m_vector[i]);
+            }
+            else
+            {
+                tableau4.append(m_vector[i]);
+            }
+        }
+/*
+        tab1 = new MiniTab(tableau1);
+        tab2 = new MiniTab(tableau2);
+        tab3 = new MiniTab(tableau3);
+        tab4 = new MiniTab(tableau4);
+
+        QObject::connect(this, SIGNAL(beginThread1()), tab1, SLOT(computeIntervisility()));
+        QObject::connect(this, SIGNAL(beginThread2()), tab2, SLOT(computeIntervisility()));
+        QObject::connect(this, SIGNAL(beginThread3()), tab3, SLOT(computeIntervisility()));
+        QObject::connect(this, SIGNAL(beginThread4()), tab4, SLOT(computeIntervisility()));
 
         //thread1
-        computeIntervisility(m_vector);
-        //m_vector.moveToThread(&m_tabThread1);
-        //m_vect1.moveToThread(&m_tabThread1);
-        //moveToThread(thread1);
-        //moveToThread(thread2);
-        //moveToThread(thread3);
+        tab1.moveToThread(&m_thread1);
+        m_thread1.start();
+        emit beginThread1();
 
-        //m_tabThread1.start();
-        //emit beginThread1();
-        //emit beginThread2();
-        //emit beginThread3();
-        //emit beginThread4();
+        tab2.moveToThread(&m_thread2);
+        m_thread2.start();
+        emit beginThread2();
 
-        cout << "sortie1" << endl;
+        tab3.moveToThread(&m_thread3);
+        m_thread3.start();
+        emit beginThread3();
 
+        tab4.moveToThread(&m_thread4);
+        m_thread4.start();
+        emit beginThread4();
+        //fins des threads
+*/
         //tableau de couleurs
         tabColor.clear();
         tabColor.resize(m_vertexSort.length());
@@ -108,13 +147,16 @@ void Viewer::init()
             tabColor[i].setZ(0);
         }
 
+
+        cout << "sortie thread" << endl;
+
         if (m_coordInterp.length() != 0)
         {
             cout << "INTERPOLATION: " << m_coordInterp.length() << endl;
         }
 
         setSceneBoundingBox(minCoord, maxCoord);
-        showEntireScene();
+        //showEntireScene();
 
     }
 }
@@ -286,8 +328,6 @@ bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
     double y2 = 0;
 
     droite d(pt1, pt2);//on construit la droite passant par les deux points
-
-    //d.afficherDroite();
 
     calculateAxis(pt1, pt2, x1, x2, y1, y2);
 
@@ -761,22 +801,26 @@ void Viewer::computeIntervisility(QVector<QVector3D> m_vec)
     for (int i(0); i<m_vec.length()-vertices_by_x-1; i++)
     {
         float distance = m_coordInterp[0].distanceToPoint(m_vec[i]);
-        //float distance1 = m_coordInterp[0].distanceToPoint(m_vector[i+1]);
 
-        //if (distance <= distanceTir && intervisibility(m_coordInterp[0],m_vector[i]) && intervisibility(m_coordInterp[0],m_vector[i+vertices_by_x]) && intervisibility(m_coordInterp[0],m_vector[i+1]))
         if (distance <= distanceTir && intervisibility(m_coordInterp[0],m_vec[i]))// && intervisibility(m_coordInterp[0],m_vector[i]))
         {
             m_vect1.append(m_vec[i]);
-            //m_vect1.append(m_vector[i+vertices_by_x]);
-            //m_vect1.append(m_vector[i+1]);
         }
     }
 }
 
 
+Viewer::~Viewer()
+{
+    m_thread1.quit();
+    m_thread1.wait();
+    m_thread2.quit();
+    m_thread2.wait();
+    m_thread3.quit();
+    m_thread3.wait();
+    m_thread4.quit();
+    m_thread4.wait();
 
-
-
-
+}
 
 

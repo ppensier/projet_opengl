@@ -22,17 +22,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        points.cpp \
     triangle.cpp \
     simpleViewer.cpp \
     droite.cpp \
-    plan.cpp
+    plan.cpp \
+    minitab.cpp
 
 HEADERS  += mainwindow.h \
-        points.h \
     triangle.h \
     simpleViewer.h \
     droite.h \
-    plan.h
+    plan.h \
+    minitab.h
 
 FORMS    += mainwindow.ui
