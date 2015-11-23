@@ -1,9 +1,11 @@
 #ifndef SIMPLEVIEWER_H
 #define SIMPLEVIEWER_H
 
+#include <QMouseEvent>
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
+#include <QThread>
 #include <QGLViewer/qglviewer.h>
 
 class Viewer : public QGLViewer
@@ -16,6 +18,7 @@ public:
 
     bool intervisibility(QVector3D pt1, QVector3D pt2);
     float compareAlti(QVector3D intersect, int code);
+    void computeIntervisility(QVector<QVector3D> m_vec);
 
     void computeLineLength();
 
@@ -23,11 +26,9 @@ public:
 
     qglviewer::Vec minCoord;
     qglviewer::Vec maxCoord;
+    qglviewer::Vec mouseClick(QMouseEvent* const event);
 
 protected:
-
-    //    qglviewer::Vec minCoord;
-//    qglviewer::Vec maxCoord;
 //    const QVector<QVector3D>& m_vector;
     QVector<QVector3D>& m_vector;
     int vertices_by_x;
@@ -35,12 +36,13 @@ protected:
     QVector<QVector3D> m_vertexSort;
     QVector<QVector3D>& m_coordInterp;
     QVector<QVector3D> tabColor;
+    QVector<QVector3D> m_vect1;
     double& distanceTir;
     int pasX;
     int pasY;
 
 private:
-    //QThread m_tabThread1;
+    QThread m_tabThread1;
     //QThread m_tabThread2;
     //QThread m_tabThread3;
     //QThread m_tabThread4;

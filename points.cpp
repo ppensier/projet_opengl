@@ -69,3 +69,4 @@ double distan(Points p1, Points p2)
 
 }
 
+

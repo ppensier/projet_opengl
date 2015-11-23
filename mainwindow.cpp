@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->x1, SIGNAL(valueChanged(int)),this, SLOT(setValue(int)));
 
+    //connect(this, SIGNAL(beginThread()), m_vect1, SLOT(computeIntervisility()));
+
     /*
     QIcon image("../Preview.jpg");
     ui->openFileB->setIcon(image);
@@ -144,6 +146,7 @@ void MainWindow::chargerCoordonneesInterp()
             QVector3D point1(ui->x1->value(), ui->y1->value(), ui->z1->value());
             coordAinterp.append(point1);
             ui->zonePTE->clear();
+            m_viewer->init();
             m_viewer->draw();
 /*
             if (m_viewer->intervisibility(point1, m_vect[0]))

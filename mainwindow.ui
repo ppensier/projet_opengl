@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>571</width>
+    <width>640</width>
     <height>534</height>
    </rect>
   </property>
@@ -52,6 +52,13 @@
        <widget class="QDoubleSpinBox" name="dist_max">
         <property name="maximum">
          <double>10000.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Choisir un point sur le terrain</string>
         </property>
        </widget>
       </item>
@@ -194,7 +201,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>571</width>
+     <width>640</width>
      <height>29</height>
     </rect>
    </property>
@@ -235,7 +242,7 @@
   </action>
   <action name="actionRAZ">
    <property name="text">
-    <string>RAZ</string>
+    <string>reset</string>
    </property>
   </action>
   <action name="actionChoisir_les_point_s">

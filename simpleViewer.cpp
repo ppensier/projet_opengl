@@ -9,7 +9,7 @@ using namespace std;
 using namespace qglviewer;
 
 Viewer::Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, QWidget *parent) :
-QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length())
+QGLViewer(parent), m_vector(vector), m_coordInterp(vector_interp), distanceTir(distMax), tabColor(m_vector.length()), m_tabThread1()
 {
 
 }
@@ -77,13 +77,26 @@ void Viewer::init()
                 }
                 i++;//on passe à ligne suivante
             }
-
-            //deuxième triangle
-//            m_vertexSort.push_back(m_vector[i+1]);
-//            m_vertexSort.push_back(m_vector[i+vertices_by_x]);
-//            m_vertexSort.push_back(m_vector[i+1+vertices_by_x]);
-
         }
+
+        //on ajoute les points à la bonne distance et visibles
+        cout << "entree1" << endl;
+
+        //thread1
+        computeIntervisility(m_vector);
+        //m_vector.moveToThread(&m_tabThread1);
+        //m_vect1.moveToThread(&m_tabThread1);
+        //moveToThread(thread1);
+        //moveToThread(thread2);
+        //moveToThread(thread3);
+
+        //m_tabThread1.start();
+        //emit beginThread1();
+        //emit beginThread2();
+        //emit beginThread3();
+        //emit beginThread4();
+
+        cout << "sortie1" << endl;
 
         //tableau de couleurs
         tabColor.clear();
@@ -91,7 +104,7 @@ void Viewer::init()
         for ( int i = 0; i<m_vertexSort.length(); ++i)
         {
             tabColor[i].setX(0);
-            tabColor[i].setY((m_vertexSort[i].z()-minCoord.z) / (maxCoord.z -minCoord.z));
+            tabColor[i].setY((m_vertexSort[i].z()-minCoord.z)/(maxCoord.z -minCoord.z));
             tabColor[i].setZ(0);
         }
 
@@ -100,23 +113,8 @@ void Viewer::init()
             cout << "INTERPOLATION: " << m_coordInterp.length() << endl;
         }
 
-        //cout << m_coordInterp[0].x() << " " << m_coordInterp[0].y() << " " << m_coordInterp[1].x() << " " << m_coordInterp[1].y() << endl;
-
-        //cout << m_vertexSort[0].x() << " " << m_vertexSort[1].x() << " " << m_vertexSort[2].x() << endl;
-        //cout << "min : " << minCoord.x << " " << minCoord.y << " " << minCoord.z << endl;
-
-        //cout << m_vector[2].x() << " " << m_vector[2+vertices_by_x].x() << endl;
-
-        //cout << "min en x: " << minCoord.x << endl;
-        //cout << "max en x: " << maxCoord.x << endl;
-
         setSceneBoundingBox(minCoord, maxCoord);
         showEntireScene();
-
-        const qglviewer::Camera* const camera = this->camera();
-
-        //if (m_coordInterp.length() != 0)
-            //camera->setPosition(m_coordInterp[0]);
 
     }
 }
@@ -158,53 +156,9 @@ void Viewer::draw()
   if (m_vector.length() != 0)
   {
 
-//    glColor3f(1.0f, 0.0f , 0.0f);
-//    glLineWidth(50.0);
-//    glBegin(GL_LINE);
-//        glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-//        glVertex3f(m_vector[1].x(), m_vector[1].y(), m_vector[1].z());
-
-//    glEnd();
-
     glClear(GL_COLOR_BUFFER_BIT); // clear screen
-    //glLineWidth(1);
-
-  //cout << minCoord.x << minCoord.y << minCoord.z << endl;
-
-  //glBegin(GL_TRIANGLES);
-/*
-    glColor3f(1.0f, 1.0f , 1.0f);
-      for (int i(0); i<m_vector.length()-vertices_by_x-1; i++)
-      {
-          glBegin(GL_LINE_LOOP);
-          //glColor3f(1.0f, 0.2f , 0.0f);
-          //Premier triangle
-              glVertex3d(m_vector[i].x(), m_vector[i].y(), m_vector[i].z()); //premier point
-              glVertex3d(m_vector[i+vertices_by_x].x(), m_vector[i+vertices_by_x].y(), m_vector[i+vertices_by_x].z());//deuxième point
-              glVertex3d(m_vector[i+1].x(), m_vector[i+1].y(), m_vector[i+1].z());//troisième point
-          glEnd();
-*/
-          //Deuxième triangle
-          /*
-          glBegin(GL_LINE_LOOP);
-              glVertex3f(m_vector[i+1].x(), m_vector[i+1].y(), m_vector[i+1].z());//3eme point du deuxième triangle
-              glVertex3f(m_vector[i+vertices_by_x].x(), m_vector[i+vertices_by_x].y(), m_vector[i+vertices_by_x].z());//2eme point du premier triangle
-              glVertex3f(m_vector[i+1+vertices_by_x].x(), m_vector[i+1+vertices_by_x].y(), m_vector[i+1+vertices_by_x].z());
-          glEnd();
-
-           }
-          */
 
     //on affiche le tableau trié avec glDrawArrays
-    qglColor(Qt::white);
-    glLineWidth(1.0);
-    glEnableClientState(GL_VERTEX_ARRAY);//on indique à la carte graphique que l'on va travailler avec des vertex array
-    glEnableClientState (GL_COLOR_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
-        glColorPointer(3, GL_FLOAT, 0, tabColor.constData());
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, m_vertexSort.size());//dessine les primitives
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
 
     if (m_coordInterp.length() != 0)
     {
@@ -226,91 +180,102 @@ void Viewer::draw()
                 glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
             glEnd();
         }
-        else
+        else//un seul point
         {
-            glPointSize(5.0);
+            glPointSize(10.0);
             glColor3f(0.0f, 0.0f, 1.0f);
             glBegin(GL_POINTS);
                 glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
             glEnd();
-            //glBegin(GL_LINES);
-            //    //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //    //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-            //    glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-            //    glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //glEnd();
 
-            //glBegin(GL_LINES);
-            //    //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //    //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-            //    glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-            //    glVertex3f(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-            //glEnd();
+            glColor3f(1.0f, 0.0f, 0.0f);
+            if (m_vect1.length() != 0)
+            {
+                for (int i(0); i<m_vect1.length(); i++)
+                {
+                    glBegin(GL_LINES);
+                        glLineWidth(0.01);
+                        glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
+                        glVertex3f(m_vect1[i].x(), m_vect1[i].y(), m_vect1[i].z());
+                    glEnd();
+                }
+            }
 
+            //glEnableClientState(GL_VERTEX_ARRAY);
+            //    glVertexPointer(3, GL_FLOAT, 0, m_vect1.constData());
+            //    glDrawArrays(GL_TRIANGLES, 0, m_vect1.size());
+            //glDisableClientState(GL_VERTEX_ARRAY);
 
             //if (intervisibility(m_coordInterp[0], m_vector[0]))
             //    cout << "OK" << endl;
 
             //on récupère seulement les sommets situés les plus proches
-            QVector<QVector3D> m_vect1;
+            /*
             for (int i(0); i<m_vector.length(); i++)
             {
                 float distance = m_coordInterp[0].distanceToPoint(m_vector[i]);
-                if (distance <= distanceTir)
+                if (distance <= distanceTir && intervisibility(m_coordInterp[0],m_vector[i]))
                 {
                     m_vect1.append(m_vector[i]);
+                    m_vect1.append(m_vector[i+vertices_by_x]);
+                    m_vect1.append(m_vector[i+1]);
                 }
             }
-
-            //m_vect1.moveToThread(&m_tabThread1);
-            //connect(this, SIGNAL(beginThread()), m_vect1, SLOT(computeIntervisility));
-
-            // Start thread
-            //m_tabThread1.start();
-            //emit beginThread();
 
             for (int i(0); i<m_vect1.length(); i++)
             {
                 float distance = m_coordInterp[0].distanceToPoint(m_vect1[i]);
                 if (distance <= distanceTir)
                 {
-                    //cout << "COORDONNEES: " << m_vector[i].x() << " " << m_vector[i].y() << " " << m_vector[i].z() << endl;
+                    //if (intervisibility(m_coordInterp[0], m_vect1[i]) && intervisibility(m_coordInterp[0], m_vect1[i+vertices_by_x]) && intervisibility(m_coordInterp[0], m_vect1[i+1]))
                     if (intervisibility(m_coordInterp[0], m_vect1[i]))
                     {
-                        //cout << "INTERVISIBILITE OK" << endl;
-                        glColor3f(1.0f, 0.0f, 0.0f);
-                        glBegin(GL_LINES);
-                            glLineWidth(0.01);
-                            //glVertex3d(m_vector[0].x(), m_vector[0].y(), m_vector[0].z());
-                            //glVertex3d(m_vector[m_vector.length()-1].x(), m_vector[m_vector.length()-1].y(), m_vector[m_vector.length()-1].z());
-                            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-                            glVertex3f(m_vect1[i].x(), m_vect1[i].y(), m_vect1[i].z());
-                        glEnd();
+
+                        //cout << "indice: " << i << endl;
+                        //cout << "on rentre ici!" << endl;
+                        //glColor3f(1.0f, 0.2f , 0.0f);
+                        //cout << m_vect1.length() << " " << m_vector[i].x() << " " << m_vector[i+vertices_by_x].x() << " " << m_vector[i+1].x() << endl;
+                        //glBegin(GL_TRIANGLES);
+                        //    glVertex3f(m_vect1[i].x(), m_vect1[i].y(), m_vect1[i].z());
+                        //    glVertex3f(m_vect1[i+vertices_by_x].x(), m_vect1[i+vertices_by_x].y(), m_vect1[i+vertices_by_x].z());
+                        //    glVertex3f(m_vect1[i+1].x(), m_vect1[i+1].y(), m_vect1[i+1].z());
+                        //glEnd();
+
+                        //glPointSize(5.0);
+                        //glColor3f(1.0f, 0.0f, 0.0f);
+                        //glBegin(GL_POINTS);
+                        //    glVertex3f(m_vect1[i].x(), m_vect1[i].y(), m_vect1[i].z());
+                        //glEnd();
+
                     }
-                    else
-                    {
-                        //cout << "Pas d'intervisibilité!" << endl;
-                    }
+*/
+
                 }
             }
+
+
+            glLineWidth(1.0);
+            glEnableClientState(GL_VERTEX_ARRAY);//on indique à la carte graphique que l'on va travailler avec des vertex array
+            glEnableClientState (GL_COLOR_ARRAY);
+                glVertexPointer(3, GL_FLOAT, 0, m_vertexSort.constData());//on envoie le tableau de données à la carte graphique
+                glColorPointer(3, GL_FLOAT, 0, tabColor.constData());
+                glDrawArrays(GL_TRIANGLES, 0, m_vertexSort.size());//dessine les primitives
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
 
         }
     }
 
-//    if (m_coordInterp.length() != 0)
-//    {
-//        //cout << "DRAW INTERPOLATION: " << m_coordInterp.length() << endl;
-//        glBegin(GL_LINE);
-//            glLineWidth(50.0);
-//            glColor3f(1.0f, 0.0f, 0.0f);
-//            glVertex3f(m_coordInterp[0].x(), m_coordInterp[0].y(), m_coordInterp[0].z());
-//            glVertex3f(m_coordInterp[1].x(), m_coordInterp[1].y(), m_coordInterp[1].z());
-//        glEnd();
+/*
+            cout << "SIZE: " << m_vect1.length() << endl;
 
-    //}
+            glColor3d(1.0,0.0,0.0);
+            glEnableClientState(GL_VERTEX_ARRAY);
+                glVertexPointer(3, GL_FLOAT, 0, m_vect1.constData());
+                glDrawArrays(GL_TRIANGLES, 0, m_vect1.size());
+            glDisableClientState(GL_VERTEX_ARRAY);
+*/
 
-  }
-}
 
 bool Viewer::intervisibility(QVector3D pt1, QVector3D pt2)
 {
@@ -765,3 +730,53 @@ bool Viewer::computeSousTerre(QVector3D pt1)
         return false;
 
 }
+
+
+qglviewer::Vec Viewer::mouseClick(QMouseEvent* const event)
+{
+
+    qglviewer::Camera* const camera = this->camera();
+
+    QPoint position_mouse;
+    position_mouse.setX(event->x());
+    position_mouse.setY(event->y());
+
+    cout << "Coorodonnées écran x : " << position_mouse.x() << ", y : " << position_mouse.y() << endl;
+    bool found;
+    qglviewer::Vec position_terrain = camera->pointUnderPixel(position_mouse, found);
+
+    if (found)
+    {
+        cout << "coordonnées terrain: " << position_terrain.x << ", " << position_terrain.x << ", " << position_terrain.z << endl;
+    }
+    else
+    {
+        cout << "la postion cherchée n'existe pas" << endl;
+    }
+    return position_terrain;
+}
+
+void Viewer::computeIntervisility(QVector<QVector3D> m_vec)
+{
+    for (int i(0); i<m_vec.length()-vertices_by_x-1; i++)
+    {
+        float distance = m_coordInterp[0].distanceToPoint(m_vec[i]);
+        //float distance1 = m_coordInterp[0].distanceToPoint(m_vector[i+1]);
+
+        //if (distance <= distanceTir && intervisibility(m_coordInterp[0],m_vector[i]) && intervisibility(m_coordInterp[0],m_vector[i+vertices_by_x]) && intervisibility(m_coordInterp[0],m_vector[i+1]))
+        if (distance <= distanceTir && intervisibility(m_coordInterp[0],m_vec[i]))// && intervisibility(m_coordInterp[0],m_vector[i]))
+        {
+            m_vect1.append(m_vec[i]);
+            //m_vect1.append(m_vector[i+vertices_by_x]);
+            //m_vect1.append(m_vector[i+1]);
+        }
+    }
+}
+
+
+
+
+
+
+
+
