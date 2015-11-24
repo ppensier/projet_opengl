@@ -34,7 +34,7 @@ public:
     //QVector<QVector3D>& vect(int taille);
 
 public slots:
-    void raz();
+    void reset();
     void changeNom();
     void changed();
     void chargerCoordonneesInterp();

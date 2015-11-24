@@ -122,19 +122,19 @@ void Viewer::init()
         QObject::connect(this, SIGNAL(beginThread4()), tab4, SLOT(computeIntervisility()));
 
         //thread1
-        tab1.moveToThread(&m_thread1);
+        tab1->moveToThread(&m_thread1);
         m_thread1.start();
         emit beginThread1();
 
-        tab2.moveToThread(&m_thread2);
+        tab2->moveToThread(&m_thread2);
         m_thread2.start();
         emit beginThread2();
 
-        tab3.moveToThread(&m_thread3);
+        tab3->moveToThread(&m_thread3);
         m_thread3.start();
         emit beginThread3();
 
-        tab4.moveToThread(&m_thread4);
+        tab4->moveToThread(&m_thread4);
         m_thread4.start();
         emit beginThread4();
         //fins des threads
@@ -158,7 +158,7 @@ void Viewer::init()
         }
 
         setSceneBoundingBox(minCoord, maxCoord);
-        //showEntireScene();
+        showEntireScene();
 
     }
 }

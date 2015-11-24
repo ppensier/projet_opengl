@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->actionMNT, SIGNAL(triggered()), this, SLOT(changeNom()));
 
     //méthode raz de la zone de texte
-    QObject::connect(ui->actionRAZ, SIGNAL(triggered()), this, SLOT(raz()));
+    QObject::connect(ui->actionRAZ, SIGNAL(triggered()), this, SLOT(reset()));
 
     //Anciens boutons
     // On ferme l'application
@@ -196,7 +196,7 @@ void MainWindow::changeLimitValues()
     }
 }
 
-void MainWindow::raz() {
+void MainWindow::reset() {
     //ui->nomLE->clear();
     ui->zonePTE->clear();
     ui->x1->setValue(0);
@@ -205,7 +205,10 @@ void MainWindow::raz() {
     ui->x2->setValue(0);
     ui->y2->setValue(0);
     ui->z2->setValue(m_viewer->minCoord.z);
+    coordAinterp.removeLast();
+    coordAinterp.removeLast();
     m_viewer->init();
+    m_viewer->draw();
     ui->sBar->showMessage("...Nettoyage...",2000);
 }
 

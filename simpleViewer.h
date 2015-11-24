@@ -10,15 +10,16 @@
 
 //#include "minitab.h"
 
-class Minitab;
+class MiniTab;
 
 class Viewer : public QGLViewer
 {
+    Q_OBJECT
 public:
     Viewer();
     //explicit Viewer(const QVector<QVector3D>& vector, const QVector<QVector2D>& vector_interp, QWidget *parent = 0);
     explicit Viewer(QVector<QVector3D>& vector, QVector<QVector3D>& vector_interp, double& distMax, int vertices_by_x, QWidget *parent = 0);
-    ~Viewer();
+    virtual ~Viewer();
     virtual void init();
     virtual void draw();
 
@@ -47,10 +48,10 @@ protected:
     int pasX;
     int pasY;
 
-    Minitab* tab1;
-    Minitab* tab2;
-    Minitab* tab3;
-    Minitab* tab4;
+    MiniTab* tab1;
+    MiniTab* tab2;
+    MiniTab* tab3;
+    MiniTab* tab4;
 
 private:
     QThread m_thread1;
