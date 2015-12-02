@@ -16,6 +16,11 @@
 #include <QtWidgets>
 
 #include "simpleViewer.h"
+#include "mnt.h"
+#include "threadhorizontal.h"
+#include "threadvertical.h"
+#include "threadoblique.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +43,7 @@ public slots:
     void changeNom();
     void changed();
     void chargerCoordonneesInterp();
+    void appendCoordAinterp(QVector3D);
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +52,7 @@ protected:
     QVector<QVector3D> m_vect;
     QString nomF;
     Viewer* m_viewer;
+    MNT* m_mnt;
     QVector<QVector3D> coordAinterp;//vecteurs de coordonnées où l'on désire interpoler l'altitude.
     double distMax;
 

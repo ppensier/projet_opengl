@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>859</width>
     <height>534</height>
    </rect>
   </property>
@@ -56,7 +56,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="pointMNT">
         <property name="text">
          <string>Choisir un point sur le terrain</string>
         </property>
@@ -80,13 +80,13 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="x1"/>
+       <widget class="QDoubleSpinBox" name="x1"/>
       </item>
       <item>
-       <widget class="QSpinBox" name="y1"/>
+       <widget class="QDoubleSpinBox" name="y1"/>
       </item>
       <item>
-       <widget class="QSpinBox" name="z1"/>
+       <widget class="QDoubleSpinBox" name="z1"/>
       </item>
       <item>
        <widget class="QLabel" name="point2">
@@ -96,20 +96,13 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="x2">
-        <property name="maximum">
-         <number>99</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-       </widget>
+       <widget class="QDoubleSpinBox" name="x2"/>
       </item>
       <item>
-       <widget class="QSpinBox" name="y2"/>
+       <widget class="QDoubleSpinBox" name="y2"/>
       </item>
       <item>
-       <widget class="QSpinBox" name="z2"/>
+       <widget class="QDoubleSpinBox" name="z2"/>
       </item>
       <item>
        <widget class="QPushButton" name="envoyerCoord">
@@ -201,8 +194,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
-     <height>29</height>
+     <width>859</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuIntervisibilitySoft">
@@ -220,10 +213,10 @@
    </widget>
    <widget class="QMenu" name="menuAffichage">
     <property name="title">
-     <string>Affichage</string>
+     <string>Primitive</string>
     </property>
-    <addaction name="actionChoisir_les_point_s"/>
-    <addaction name="actionLancer_le_calcul"/>
+    <addaction name="action_droite"/>
+    <addaction name="action_parabole"/>
    </widget>
    <addaction name="menuIntervisibilitySoft"/>
    <addaction name="menuEdition"/>
@@ -245,14 +238,14 @@
     <string>reset</string>
    </property>
   </action>
-  <action name="actionChoisir_les_point_s">
+  <action name="action_droite">
    <property name="text">
-    <string>Choisir le(s) point(s)</string>
+    <string>droite</string>
    </property>
   </action>
-  <action name="actionLancer_le_calcul">
+  <action name="action_parabole">
    <property name="text">
-    <string>Lancer le calcul</string>
+    <string>Parabole</string>
    </property>
   </action>
  </widget>

@@ -2,7 +2,7 @@
 #define MINITAB_H
 
 #include "simpleViewer.h"
-
+/*
 class MiniTab : public Viewer
 {
     Q_OBJECT
@@ -12,6 +12,8 @@ public:
 public slots:
     void computeIntervisility();
 };
-
+*/
 
 #endif // MINITAB_H
+
+

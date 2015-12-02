@@ -9,8 +9,6 @@ QT      += opengl
 QT +=   xml
 
 LIBS += -lQGLViewer
-LIBS += -lglut
-LIBS += -lGLU
 INCLUDEPATH += -L/usr/lib/
 
 CONFIG += console
@@ -22,17 +20,23 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    triangle.cpp \
     simpleViewer.cpp \
     droite.cpp \
     plan.cpp \
-    minitab.cpp
+    mnt.cpp \
+    parabole.cpp \
+    threadhorizontal.cpp \
+    threadvertical.cpp \
+    threadoblique.cpp
 
 HEADERS  += mainwindow.h \
-    triangle.h \
     simpleViewer.h \
     droite.h \
     plan.h \
-    minitab.h
+    mnt.h \
+    parabole.h \
+    threadhorizontal.h \
+    threadvertical.h \
+    threadoblique.h
 
 FORMS    += mainwindow.ui
